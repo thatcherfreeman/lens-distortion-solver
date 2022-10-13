@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import os
+from tqdm import tqdm
 
 
 def open_image(image_fn: str) -> np.ndarray:
@@ -25,6 +26,17 @@ def default_stmap(height: int, width: int) -> np.ndarray:
         np.linspace(0, 1, width),
         np.linspace(1, 0, height),
     ), axis=2)
+
+
+def make_distort_stmap_from_model(model, height: int, width: int) -> np.ndarray:
+    initial_stmap = default_stmap(height, width)
+    output_stmap = np.zeros_like(initial_stmap)
+    rows, columns, chans = initial_stmap.shape
+    for x in tqdm(range(rows)):
+        for y in range(columns):
+            xc, yc = model.forward(initial_stmap[x,y,0] - 0.5, initial_stmap[x,y,1] - 0.5)
+            output_stmap[x, y, :] = [xc + 0.5, yc + 0.5]
+    return output_stmap
 
 
 def convolution2d(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
