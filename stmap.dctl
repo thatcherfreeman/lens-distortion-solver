@@ -1,0 +1,49 @@
+// Expects ST map to be channels 2 and 3 (G, B), then applies the ST map to channel 1 (R).
+__DEVICE__ float get_coord_float(float x, int width) {
+    return ((x) * (float)width);
+}
+
+__DEVICE__ int get_coord(float x, int width) {
+    return (int)_round(get_coord_float(x, width));
+}
+
+__DEVICE__ float get_value(int p_X, int p_Y, __TEXTURE__ p_Tex) {
+    float out = _tex2D(p_Tex, p_X, p_Y);
+    return out;
+}
+
+__DEVICE__ float sample_point_bilinear(float x, float y, int p_Width, int p_Height, __TEXTURE__ p_Tex) {
+    float f_x = get_coord_float(x, p_Width);
+    float f_y = get_coord_float(y, p_Height);
+
+    int x_low = (int)_floor(f_x);
+    int x_high = (int)_ceil(f_x);
+    int y_low = (int)_floor(f_y);
+    int y_high = (int)_ceil(f_y);
+
+    float c_ll = get_value(x_low, y_low, p_Tex);
+    float c_lh = get_value(x_low, y_high, p_Tex);
+    float c_hl = get_value(x_high, y_low, p_Tex);
+    float c_hh = get_value(x_high, y_high, p_Tex);
+
+    float mix_x = f_x - x_low; // y_high - y_low guaranteed to be 1.
+    float mix_y = f_y - y_low;
+
+    float c_l = _mix(c_ll, c_hl, mix_x);
+    float c_h = _mix(c_lh, c_hh, mix_x);
+    float c = _mix(c_l, c_h, mix_y);
+    return c;
+}
+
+
+__DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, __TEXTURE__ p_TexR, __TEXTURE__ p_TexG, __TEXTURE__ p_TexB)
+{
+    // look up the uv coordinate for this pixel.
+    float u = get_value(p_X, p_Y, p_TexG);
+    float v = get_value(p_X, p_Y, p_TexB);
+
+    float lum = sample_point_bilinear(u, v, p_Width, p_Height, p_TexR);
+    float3 curr_color = make_float3(lum, lum, lum);
+    return curr_color;
+}
+
