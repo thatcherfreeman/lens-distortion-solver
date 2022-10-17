@@ -14,8 +14,8 @@ class first_order_spherical:
         return (xc, yc)
 
     def reverse(self, xc, yc):
-        rc = xc**2 + yc**2
-        rd = cubic_solver(self.k, 0, 1, -rc)
+        rc = (xc**2 + yc**2)**0.5
+        rd = cubic_solver(self.k1, 0, 1, -rc)
         xd = xc * (rd / rc)
         yd = yc * (rd / rc)
         return (xd, yd)

@@ -9,6 +9,8 @@ def open_image(image_fn: str) -> np.ndarray:
     img: np.ndarray = cv2.imread(image_fn, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
     print(img.dtype)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # pre-reverse first axis
+    img = img[::-1, :, :]
     return img
 
 def write_image(image_fn: str, img: np.ndarray):
@@ -16,7 +18,10 @@ def write_image(image_fn: str, img: np.ndarray):
     h,w,c = img.shape
     if c < 3:
         needed_channels = 3 - c
-        img = np.concatenate([img, np.zeros((h, w, needed_channels))], axis=2).astype(np.float32)
+        img = np.concatenate([img, np.zeros((h, w, needed_channels))], axis=2)
+    # Reverse first axis.
+    img = img[::-1, :, :]
+    img = img.astype(np.float32)
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     cv2.imwrite(image_fn, img)
 
@@ -24,17 +29,17 @@ def write_image(image_fn: str, img: np.ndarray):
 def default_stmap(height: int, width: int) -> np.ndarray:
     return np.stack(np.meshgrid(
         np.linspace(0, 1, width),
-        np.linspace(1, 0, height),
+        np.linspace(0, 1, height),
     ), axis=2)
 
 
-def make_distort_stmap_from_model(model, height: int, width: int) -> np.ndarray:
+def make_distort_stmap_from_model(fn, height: int, width: int) -> np.ndarray:
     initial_stmap = default_stmap(height, width)
     output_stmap = np.zeros_like(initial_stmap)
     rows, columns, chans = initial_stmap.shape
     for x in tqdm(range(rows)):
         for y in range(columns):
-            xc, yc = model.forward(initial_stmap[x,y,0] - 0.5, initial_stmap[x,y,1] - 0.5)
+            xc, yc = fn(initial_stmap[x,y,0] - 0.5, initial_stmap[x,y,1] - 0.5)
             output_stmap[x, y, :] = [xc + 0.5, yc + 0.5]
     return output_stmap
 
@@ -56,7 +61,7 @@ def convolution2d(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
 
 def cubic_solver(a=0, b=0, c=0, d=0):
     # Finds roots of polynomial ax^3 + 0x^2 + cx + d = 0
-    assert b == 0
+    assert b == 0, "cubic solver only works with b=0"
 
     if a == 0:
         return -d / c
@@ -71,11 +76,52 @@ def cubic_solver(a=0, b=0, c=0, d=0):
     if delta > 0:
         # One root.
         C = (R + (delta**0.5))**(1/3)
-        return C + (Q / C)
+        return C - (Q / C)
     else:
-        S = ((R**2 - delta)**0.5)**(1/3)
-        T = (np.arctan(((-delta)**0.5) / R))/3
-        return -S * np.cos(T) + S * (3**0.5) * np.sin(T)
+        S = (R + (delta**0.5))**(1/3)
+        T = (R - (delta**0.5))**(1/3)
+        out = S + T
+        if type(out) == complex:
+            out = out.real
+        return out
 
+def bilinear_sample(image: np.ndarray, x: float, y: float) -> np.ndarray:
+    # Sample where (0, 0) is the top left corner of the image.
+    height, width, channels = image.shape
+    f_x = (x % 1) * (width - 1)
+    f_y = (y % 1) * (height - 1)
+
+    x_low = int(f_x)
+    x_high = int(f_x + 1)
+    y_low = int(f_y)
+    y_high = int(f_y + 1)
+    x_high = min(x_high, width - 1)
+    y_high = min(y_high, height - 1)
+
+    c_ll = image[y_low, x_low, :]
+    c_lh = image[y_high, x_low, :]
+    c_hl = image[y_low, x_high, :]
+    c_hh = image[y_high, x_high, :]
+
+    mix_x = f_x - x_low
+    mix_y = f_y - y_low
+    c_l = c_ll + (c_hl - c_ll) * mix_x
+    c_h = c_lh + (c_hh - c_lh) * mix_x
+    c = c_l + (c_h - c_l) * mix_y
+    return c
+
+
+def apply_stmap(image: np.ndarray, stmap: np.ndarray, output_height: int, output_width: int) -> np.ndarray:
+    channels = image.shape[2]
+    output = np.zeros((output_height, output_width, channels))
+    for row in tqdm(range(output_height)):
+        for col in range(output_width):
+            x = col / (output_width - 1)
+            y = row / (output_height - 1)
+
+            s, t = bilinear_sample(stmap, x, y)
+            color = bilinear_sample(image, s, t)
+            output[row, col] = color
+    return output
 
 
