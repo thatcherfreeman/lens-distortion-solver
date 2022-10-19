@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     aspect = img_width / img_height
 
-    model = first_order_spherical(k=args.k, aspect_ratio=img_width/img_height)
+    # model = first_order_spherical(k=args.k, aspect_ratio=img_width/img_height)
 
     # print("Making undistortion stmap...")
     # output_stmap = make_distort_stmap_from_model(model.forward, 1080, 1920)
