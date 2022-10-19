@@ -1,0 +1,595 @@
+Composition {
+	CurrentTime = 0,
+	RenderRange = { 0, 0 },
+	GlobalRange = { 0, 0 },
+	CurrentID = 27,
+	HiQ = true,
+	PlaybackUpdateMode = 0,
+	Version = "Fusion Studio 18.0.4 build 5",
+	SavedOutputs = 0,
+	HeldTools = 0,
+	DisabledTools = 0,
+	LockedTools = 0,
+	AudioOffset = 0,
+	Resumable = true,
+	OutputClips = {
+		"/Users/thatcher/coding/lens-distortion-solver/sample_images/parabola.exr"
+	},
+	Tools = {
+		Background2 = Background {
+			Inputs = {
+				GlobalOut = Input { Value = 0, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				TopLeftRed = Input { Value = 1, },
+				TopLeftGreen = Input { Value = 1, },
+				TopLeftBlue = Input { Value = 1, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 165, 148.5 } },
+		},
+		Background1 = Background {
+			Inputs = {
+				GlobalOut = Input { Value = 0, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				TopLeftRed = Input { Value = 1, },
+				TopLeftGreen = Input { Value = 1, },
+				TopLeftBlue = Input { Value = 1, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 275, 49.5 } },
+		},
+		sRectangle1 = sRectangle {
+			Inputs = {
+				["Translate.Y"] = Input { Value = 0.2, },
+				Width = Input { Value = 1.1, },
+				Height = Input { Value = 0.002, },
+				Red = Input { Value = 0, },
+				Green = Input { Value = 0, },
+				Blue = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 440, -49.5 } },
+		},
+		sTransform1 = sTransform {
+			Inputs = {
+				YOffset = Input { Value = -0.101, },
+				Input = Input {
+					SourceOp = "sRectangle1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 330, -16.5 } },
+		},
+		sMerge2 = sMerge {
+			Inputs = {
+				Input1 = Input {
+					SourceOp = "sRectangle1",
+					Source = "Output",
+				},
+				Input2 = Input {
+					SourceOp = "sTransform1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 440, 16.5 } },
+		},
+		sMerge1 = sMerge {
+			Inputs = {
+				Input1 = Input {
+					SourceOp = "sMerge2",
+					Source = "Output",
+				},
+				Input2 = Input {
+					SourceOp = "sRectangle1_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 440, 49.5 } },
+		},
+		sRectangle1_1 = sRectangle {
+			Inputs = {
+				["Translate.X"] = Input { Value = 0.3, },
+				Width = Input { Value = 1.1, },
+				Height = Input { Value = 0.002, },
+				Angle = Input { Value = 90, },
+				Red = Input { Value = 0, },
+				Green = Input { Value = 0, },
+				Blue = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 550, 16.5 } },
+		},
+		sTransform2 = sTransform {
+			Inputs = {
+				XOffset = Input { Value = -0.116, },
+				Input = Input {
+					SourceOp = "sRectangle1_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 605, 82.5 } },
+		},
+		sMerge3 = sMerge {
+			Inputs = {
+				Input1 = Input {
+					SourceOp = "sMerge1",
+					Source = "Output",
+				},
+				Input2 = Input {
+					SourceOp = "sTransform2",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 440, 82.5 } },
+		},
+		sRender1 = sRender {
+			Inputs = {
+				GlobalOut = Input { Value = 0, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Input = Input {
+					SourceOp = "sMerge3",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 440, 148.5 } },
+		},
+		Merge1 = Merge {
+			Inputs = {
+				Background = Input {
+					SourceOp = "Background1",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "sRender1",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 275, 82.5 } },
+		},
+		LensDistort1 = LensDistort {
+			Inputs = {
+				Mode = Input { Value = 0, },
+				LensDistortionModel = Input { Value = 1, },
+				["DEClassicLDModel.Distortion"] = Input { Value = 0.5, },
+				Input = Input {
+					SourceOp = "Merge1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 275, 115.5 } },
+		},
+		Merge2 = Merge {
+			Inputs = {
+				Background = Input {
+					SourceOp = "Background2",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "LensDistort1",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 275, 148.5 } },
+		},
+		Saver1 = Saver {
+			CtrlWZoom = false,
+			Inputs = {
+				ProcessWhenBlendIs00 = Input { Value = 0, },
+				Clip = Input {
+					Value = Clip {
+						Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/parabola.exr",
+						FormatID = "OpenEXRFormat",
+						Length = 0,
+						Saving = true,
+						TrimIn = 0,
+						ExtendFirst = 0,
+						ExtendLast = 0,
+						Loop = 1,
+						AspectMode = 0,
+						Depth = 0,
+						GlobalStart = -2000000000,
+						GlobalEnd = 0
+					},
+				},
+				OutputFormat = Input { Value = FuID { "OpenEXRFormat" }, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Input = Input {
+					SourceOp = "Merge2",
+					Source = "Output",
+				},
+				["OpenEXRFormat.CompressionLevel"] = Input { Value = 4, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 275, 181.5 } },
+		}
+	},
+	Frames = {
+		{
+			FrameTypeID = "ChildFrame",
+			Mode = 3,
+			LayoutPreset = 0,
+			PresetName = "Default",
+			Left = 0,
+			Top = 27,
+			Width = 1680,
+			Height = 947,
+			ZoneInfo = {
+				["!Right"] = {
+				},
+				["!Left"] = {
+				},
+				AuxLeft = { Expanded = true },
+				Right = { Expanded = true, },
+				Left = { Expanded = false, },
+				AuxRight = { Expanded = true }
+			},
+			ViewInfo = {
+				Viewer1 = { Show = true, RatioY = 0.01, RatioX = 1, },
+				InnerLeft = {
+				},
+				MainSplit = {
+					RatioX = 100,
+					RatioY = 1.00233644859813,
+				},
+				CenterSplit = {
+					RatioX = 1,
+					RatioY = 100,
+				},
+				Viewer2 = { Show = false, Adjust = true, RatioY = 0.01, MRU = 0, RatioX = 1, },
+				Comments = { Show = false },
+				Time = { Show = true, RatioX = 100, },
+				InnerColumns = {
+					RatioX = 100,
+					RatioY = 1.99766355140187,
+				},
+				Keyframes = { Show = false, },
+				LayoutStrip = { Show = true, RatioX = 100, },
+				Inspector = { Show = false, RatioY = 1, RatioX = 100, Adjust = true, MRU = 0 },
+				ActionStrip = { Show = true, RatioX = 100, },
+				InnerRight = {
+				},
+				OuterColumns = {
+					RatioX = 100,
+					RatioY = 1,
+				},
+				Effects = { Show = false, },
+				Clips = { Show = false, },
+				Metadata = { Show = false, },
+				OuterLeft = {
+				},
+				ViewerSplit = {
+					RatioX = 100,
+					RatioY = 1,
+				},
+				Nodes = { Show = false, RatioY = 100, RatioX = 1, Adjust = true, MRU = 0 },
+				OuterRight = {
+					RatioY = 100,
+					PixelX = 420,
+				},
+				MediaPool = { Show = false, },
+				Spline = { Show = false, }
+			},
+			Views = ordered() {
+				Effects = MultiView {
+					Active = "EffectView",
+					ViewList = ordered() {
+						EffectView = "EffectView"
+					},
+				},
+				Nodes = MultiView {
+					Active = "FlowView",
+					ViewList = ordered() {
+						FlowView = "FlowView"
+					},
+					FlowView = FlowView {
+						Flags = {
+							Navigator = true,
+							AutoHideNavigator = true,
+							GridSnap = true,
+							PipesAlways = true,
+							ShowHidden = true,
+							AutoSnap = true,
+							RemoveRouters = true
+						},
+						NavigatorSize = { 200, 140 },
+						Direction = "Vertical",
+						PipeStyle = "Orthogonal",
+						RootScale = 1,
+						RootOffset = { 70, -77.6667 }
+					}
+				},
+				Keyframes = MultiView {
+					Active = "TimelineView",
+					ViewList = ordered() {
+						TimelineView = "TimelineView"
+					},
+					TimelineView = TimelineView {
+						TreeControlState = {
+						},
+						DisplayMode = "All Tools",
+						ShowCurrentTimeTools = false,
+						Filter = "Show All",
+						ShowSelectedTools = false,
+						ShowAnimatedToolsOnly = false,
+						ShowEditBoxes = false,
+						KeyFrameView = {
+							Position = { Left = 232, Bottom = 320 },
+							ScaleX = 2.14424951267057,
+							OffsetX = -51.4619883040936,
+							OffsetY = 0,
+							AutoScaling = "scroll",
+							AutoSnapTo = "frame",
+							AutoSnapToGuidelines = false,
+							GuidelinesGrabEnabled = true,
+							GuidelinesSnapTo = "frame"
+						},
+						Spreadsheet = { LeftPos = 232, Visible = false }
+					}
+				},
+				Spline = MultiView {
+					Active = "SplineView",
+					ViewList = ordered() {
+						SplineView = "SplineEditorView"
+					},
+					SplineView = SplineEditorView {
+						LeftPos = 264,
+						ScaleX = 0.2,
+						ScaleY = 0.00338983050847458,
+						OffsetX = -3.4,
+						OffsetY = 0,
+						AutoScaling = "scroll",
+						AutoSnapTo = "frame",
+						AutoSnapToGuidelines = false,
+						GuidelinesSnapTo = "frame",
+						ShowKeyMarkers = false,
+						IndependentHandles = false,
+						ShowNonSplineModifiers = false,
+						GuidelinesGrabEnabled = true,
+						ShowOneToolOnly = false,
+						ShowSelectedTools = false,
+						ShowAllInputs = false,
+						Filter = "Show All"
+					}
+				},
+				Inspector = MultiView {
+					Active = "Tools",
+					ViewList = ordered() {
+						Tools = "ControlView",
+						Modifiers = "ModifierView"
+					},
+				},
+				Viewer1 = MultiView {
+					Active = "LeftView",
+					ViewList = ordered() {
+						LeftView = "PreviewContainer"
+					},
+				},
+				Viewer2 = MultiView {
+					Active = "RightView",
+					ViewList = ordered() {
+						RightView = "PreviewContainer"
+					},
+				},
+				Time = "TimeView",
+				ActionStrip = "ActionStripView",
+				LayoutStrip = "LayoutStripView"
+			},
+			Layout = {
+				{ ID = "LayoutStrip", FixedY = 36, Resolve = false, Flat = true },
+				{
+					{
+						{ ID = "MediaPool", Fusion = false, RatioX = 1 },
+						{ ID = "Effects", RatioX = 1 },
+						Zone = "Left",
+						Rows = 2,
+						PaneID = "OuterLeft",
+						PixelX = 420
+					},
+					{
+						{
+							{
+								{ ID = "MediaPool", Fusion = false, RatioX = 1 },
+								{ ID = "Effects", RatioX = 1 },
+								PaneID = "InnerLeft",
+								MaxViews = 1,
+								PixelX = 420,
+								Rows = 2,
+								Zone = "!Left"
+							},
+							{
+								{
+									{ ID = "Viewer1", RatioY = 0.01, RatioX = 1 },
+									{ ID = "Viewer2", RatioX = 1 },
+									RatioY = 1,
+									Columns = 2,
+									PaneID = "ViewerSplit"
+								},
+								{ ID = "Time", FixedY = 83, Flat = true },
+								RatioX = 1,
+								Rows = 2
+							},
+							{
+								{ ID = "Inspector", RatioY = 1 },
+								{ ID = "Metadata", RatioY = 1, Fusion = false },
+								PaneID = "InnerRight",
+								MaxViews = 1,
+								PixelX = 420,
+								Rows = 2,
+								Zone = "!Right"
+							},
+							RatioY = 2,
+							Columns = 3,
+							PaneID = "InnerColumns"
+						},
+						{ ID = "ActionStrip", FixedY = 50, Flat = true },
+						{
+							{ ID = "Nodes", RatioX = 1 },
+							{ ID = "Spline", RatioX = 1 },
+							{ ID = "Keyframes", RatioX = 1 },
+							RatioY = 1,
+							Columns = 3,
+							PaneID = "MainSplit"
+						},
+						{ Fusion = false, ID = "Clips", LARGE_FixedY = 160, MEDIUM_FixedY = 138, SMALL_FixedY = 110 },
+						RatioX = 1,
+						Rows = 4,
+						PaneID = "CenterSplit"
+					},
+					{
+						{ ID = "Inspector", RatioY = 1 },
+						{ ID = "Metadata", RatioY = 1, Fusion = false },
+						Zone = "Right",
+						Rows = 2,
+						PaneID = "OuterRight",
+						PixelX = 420
+					},
+					RatioY = 1,
+					Columns = 3,
+					PaneID = "OuterColumns"
+				},
+				RatioX = 1,
+				Rows = 2,
+				RatioY = 1
+			},
+			TopBar = {
+				Left = { "Left", "MediaPool", "Effects", "Clips", "Nodes", "Console" },
+				Right = { "Spline", "Keyframes", "Metadata", "Inspector", "Right" }
+			}
+		}
+	},
+	Prefs = {
+		Comp = {
+			Views = {
+				RightView = {
+					SideB = {
+						PrevCtrlInactiveColor = 4278255360,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 4278190335,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "FusionViewLUT",
+							FitMarginY = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							NearZ = 0
+						}
+					},
+				},
+				LeftView = {
+					Viewer = {
+					},
+					SideB = {
+						PrevCtrlInactiveColor = 4278255360,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 4278190335,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "FusionViewLUT",
+							FitMarginY = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							NearZ = 0
+						}
+					},
+				},
+				View1 = {
+					PrevCtrlInactiveColor = 4278255360,
+					FullScreen = false,
+					PickW = 1,
+					PickH = 1,
+					AlwaysOnTop = true,
+					PrevCtrlActiveColor = 4278190335,
+					SideB = {
+						PrevCtrlInactiveColor = 4278255360,
+						PickW = 1,
+						PickH = 1,
+						PrevCtrlActiveColor = 4278190335,
+						Viewer = {
+							EnableLUTs = false,
+							LUTPlugin = "FusionViewLUT",
+							FitMarginY = 0,
+							FitMarginX = 0,
+							FitMarginType = 0,
+							FarZ = -1000,
+							NearZ = 0
+						}
+					}
+				},
+			},
+			FrameFormat = {
+				Name = "4K Digital Cinema",
+				Rate = 24,
+				GuideX1 = 0.01220703125,
+				GuideX2 = 0.98779296875,
+				GuideRatio = 1.85,
+				DepthFull = 3,
+				DepthPreview = 3,
+				DepthInteractive = 3,
+			},
+			LastFile = "/Users/thatcher/coding/log-to-lin-finder/video files/IMG_3313.MP4",
+			PolyKeyListDlg = {
+				Window = {
+					Left = 789,
+					Top = 391
+				}
+			},
+			Unsorted = {
+				GlobalEnd = 0,
+				RenderSettings = {
+					Configs = {
+						Final = {
+							Quality = true,
+							MotionBlur = true,
+							UpdateMode = "Some",
+							UseNetwork = false,
+							SizeType = 1,
+							CustomWidth = 200,
+							CustomHeight = 160,
+							CustomAspect = true,
+							StepRender = false,
+							StepSize = 5,
+							PriorityClasses = "all",
+							ShowRenderNodes = false
+						},
+						Preview = {
+							Quality = true,
+							MotionBlur = true,
+							UpdateMode = "Some",
+							UseNetwork = false,
+							SizeType = 1,
+							CustomWidth = 200,
+							CustomHeight = 160,
+							CustomAspect = true,
+							StepRender = false,
+							StepSize = 5,
+							PriorityClasses = "all",
+							ShowRenderNodes = false
+						}
+					},
+					CurrentConfig = "Final",
+					PreviewConfig = "Preview"
+				}
+			},
+			Paths = {
+			},
+			FlowView = {
+				Direction = 1,
+				GridSnap = true,
+				PipesOnTop = true,
+				ShowHidden = true,
+				PipeStyle = 0,
+			},
+			QuickTime = {
+			},
+		}
+	},
+}
+
