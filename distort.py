@@ -32,13 +32,31 @@ if __name__ == "__main__":
         type=float,
         help="distortion parameter",
     )
+    parser.add_argument(
+        "--stmap-width",
+        default=None,
+        type=int,
+        help="Width of the generated ST Maps"
+    )
+    parser.add_argument(
+        "--stmap-height",
+        default=None,
+        type=int,
+        help="Height of the generated ST Maps"
+    )
     args = parser.parse_args()
 
     img = open_image(args.filename)
-    height, width, channels = img.shape
-    aspect = width / height
+    img_height, img_width, channels = img.shape
+    if args.stmap_width is not None and args.stmap_height is not None:
+        stmap_height, stmap_width = args.stmap_height, args.stmap_width
+    else:
+        stmap_height, stmap_width = img_height, img_width
+    print(f"Generating STMaps of resolution {stmap_height} by {stmap_width}")
 
-    model = first_order_spherical(k=args.k, aspect_ratio=width/height)
+    aspect = img_width / img_height
+
+    model = first_order_spherical(k=args.k, aspect_ratio=img_width/img_height)
 
     # print("Making undistortion stmap...")
     # output_stmap = make_distort_stmap_from_model(model.forward, 1080, 1920)
@@ -66,7 +84,7 @@ if __name__ == "__main__":
             [(1448, 990), (1481, 540), (1454, 135)],
         ],
     }
-    dataset = {k: [map(lambda point: (point[0]/width, point[1]/height), line) for line in v] for k, v in dataset.items()}
+    dataset = {k: [map(lambda point: (point[0]/img_width, point[1]/img_height), line) for line in v] for k, v in dataset.items()}
 
     # convert UV coordinates to X,Y coordinates, centered in the middle of the image.
     dataset["horizontal"] = [list(map(lambda tup: convert_uv_to_xy(tup[0], tup[1], aspect), points)) for points in dataset["horizontal"]]
@@ -77,15 +95,20 @@ if __name__ == "__main__":
     parameters['horizontal']: List[Tuple[float, float, float]] = list(map(fit_parabola_horizontal_line, dataset['horizontal']))
     parameters['vertical']: List[Tuple[float, float, float]] = list(map(fit_parabola_vertical_line, dataset['vertical']))
     parabolas = [parabola(A,B,C) for A,B,C in parameters['horizontal']] + [parabola(A,B,C) for A,B,C in parameters['vertical']]
+
     # Estimate k
-    k = np.average([p.estimate_k() for p in parabolas], weights=[p.c for p in parabolas])
-    print(k)
+    k = np.average(
+        [p.estimate_k() for p in parabolas],
+        weights=[p.c for p in parabolas],
+    )
+    print(f"Using distortion paramter k = {k}")
 
     model = first_order_spherical(k, aspect)
-    output_stmap = make_distort_stmap_from_model(model.reverse, img.shape[0], img.shape[1])
+    output_stmap = make_distort_stmap_from_model(model.reverse, stmap_height, stmap_width)
     write_image("sample_images/output_stmap.exr", output_stmap)
-    img_undistorted = apply_stmap(img, output_stmap, img.shape[0], img.shape[1])
+    img_undistorted = apply_stmap(img, output_stmap, stmap_height, stmap_width)
     write_image("sample_images/undistorted.exr", img_undistorted)
-
+    redistort_stmap = make_distort_stmap_from_model(model.forward, stmap_height, stmap_width)
+    write_image("sample_images/output_reverse_stmap.exr", redistort_stmap)
 
 

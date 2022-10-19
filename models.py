@@ -44,8 +44,8 @@ class parabola:
         return self.a * (x**2) + self.b * x + self.c
 
     def estimate_k(self) -> float:
-        # return -self.a / (self.c * (3 * self.a * self.c + 3 * (self.b**2) + 1))
-        return -self.a / self.c
+        # return -self.a / self.c
+        return -self.a / (self.c * (3 * self.a * self.c + 3 * (self.b**2) + 1))
 
 
 

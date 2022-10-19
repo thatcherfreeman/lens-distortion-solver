@@ -8,7 +8,7 @@ from typing import Tuple, List
 def open_image(image_fn: str) -> np.ndarray:
     os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
     img: np.ndarray = cv2.imread(image_fn, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
-    print(img.dtype)
+    print(f"Read image data type of {img.dtype}")
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     # pre-reverse first axis
     img = img[::-1, :, :]
@@ -63,7 +63,6 @@ def convolution2d(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
 def cubic_solver(a=0, b=0, c=0, d=0):
     # Finds roots of polynomial ax^3 + 0x^2 + cx + d = 0
     assert b == 0, "cubic solver only works with b=0"
-
     if a == 0:
         return -d / c
     a, b, c, d = float(a), float(b), float(c), float(d)
@@ -71,11 +70,9 @@ def cubic_solver(a=0, b=0, c=0, d=0):
     # Cardano's formula
     c /= a
     d /= a
-
     Q = c / 3
     R = -d / 2
     delta = Q**3 + R**2
-
     if delta > 0:
         # One root.
         C = (R + (delta**0.5))**(1/3)
