@@ -1,78 +1,394 @@
 Composition {
 	CurrentTime = 0,
 	RenderRange = { 0, 0 },
-	GlobalRange = { 0, 0 },
-	CurrentID = 27,
+	GlobalRange = { 0, 1 },
+	CurrentID = 525,
 	HiQ = true,
 	PlaybackUpdateMode = 0,
 	Version = "Fusion Studio 18.0.4 build 5",
-	SavedOutputs = 0,
+	SavedOutputs = 1,
 	HeldTools = 0,
-	DisabledTools = 0,
+	DisabledTools = 2,
 	LockedTools = 0,
 	AudioOffset = 0,
 	Resumable = true,
 	OutputClips = {
+		"/Users/thatcher/coding/lens-distortion-solver/sample_images/grid_distorted.exr",
+		"/Users/thatcher/coding/lens-distortion-solver/sample_images/checkerboard_distorted.exr",
 		"/Users/thatcher/coding/lens-distortion-solver/sample_images/parabola.exr"
 	},
 	Tools = {
-		Background2 = Background {
+		Loader4_1 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/output_stmap.exr",
+					FormatID = "OpenEXRFormat",
+					StartFrame = -1,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0
+				}
+			},
 			Inputs = {
-				GlobalOut = Input { Value = 0, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				["Clip1.OpenEXRFormat.RedName"] = Input { Value = FuID { "R" }, },
+				["Clip1.OpenEXRFormat.GreenName"] = Input { Value = FuID { "G" }, },
+				["Clip1.OpenEXRFormat.BlueName"] = Input { Value = FuID { "B" }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 1650, 16.5 } },
+		},
+		Loader5 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/output_reverse_stmap.exr",
+					FormatID = "OpenEXRFormat",
+					StartFrame = -1,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0
+				}
+			},
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				["Clip1.OpenEXRFormat.RedName"] = Input { Value = FuID { "R" }, },
+				["Clip1.OpenEXRFormat.GreenName"] = Input { Value = FuID { "G" }, },
+				["Clip1.OpenEXRFormat.BlueName"] = Input { Value = FuID { "B" }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 1320, 49.5 } },
+		},
+		Loader5_1 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/output_reverse_stmap.exr",
+					FormatID = "OpenEXRFormat",
+					StartFrame = -1,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0
+				}
+			},
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				["Clip1.OpenEXRFormat.RedName"] = Input { Value = FuID { "R" }, },
+				["Clip1.OpenEXRFormat.GreenName"] = Input { Value = FuID { "G" }, },
+				["Clip1.OpenEXRFormat.BlueName"] = Input { Value = FuID { "B" }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 1650, 49.5 } },
+		},
+		Loader2 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/checkerboard.exr",
+					FormatID = "OpenEXRFormat",
+					StartFrame = -1,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0
+				}
+			},
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				["Clip1.OpenEXRFormat.RedName"] = Input { Value = FuID { "R" }, },
+				["Clip1.OpenEXRFormat.GreenName"] = Input { Value = FuID { "G" }, },
+				["Clip1.OpenEXRFormat.BlueName"] = Input { Value = FuID { "B" }, },
+				["Clip1.OpenEXRFormat.AlphaName"] = Input { Value = FuID { "A" }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 660, -49.5 } },
+		},
+		Loader1 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/output_stmap.exr",
+					FormatID = "OpenEXRFormat",
+					StartFrame = -1,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0
+				}
+			},
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				["Clip1.OpenEXRFormat.RedName"] = Input { Value = FuID { "R" }, },
+				["Clip1.OpenEXRFormat.GreenName"] = Input { Value = FuID { "G" }, },
+				["Clip1.OpenEXRFormat.BlueName"] = Input { Value = FuID { "B" }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 55, 181.5 } },
+		},
+		Loader3 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/grid.exr",
+					FormatID = "OpenEXRFormat",
+					StartFrame = -1,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0
+				}
+			},
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				["Clip1.OpenEXRFormat.RedName"] = Input { Value = FuID { "R" }, },
+				["Clip1.OpenEXRFormat.GreenName"] = Input { Value = FuID { "G" }, },
+				["Clip1.OpenEXRFormat.BlueName"] = Input { Value = FuID { "B" }, },
+				["Clip1.OpenEXRFormat.AlphaName"] = Input { Value = FuID { "A" }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 935, -49.5 } },
+		},
+		Loader6 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/real_img_cropped0000.jpg",
+					FormatID = "JpegFormat",
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0
+				}
+			},
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 1540, -49.5 } },
+		},
+		Loader3_1 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/grid.exr",
+					FormatID = "OpenEXRFormat",
+					StartFrame = -1,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0
+				}
+			},
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				["Clip1.OpenEXRFormat.RedName"] = Input { Value = FuID { "R" }, },
+				["Clip1.OpenEXRFormat.GreenName"] = Input { Value = FuID { "G" }, },
+				["Clip1.OpenEXRFormat.BlueName"] = Input { Value = FuID { "B" }, },
+				["Clip1.OpenEXRFormat.AlphaName"] = Input { Value = FuID { "A" }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 1100, -49.5 } },
+		},
+		Loader4 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/output_stmap.exr",
+					FormatID = "OpenEXRFormat",
+					StartFrame = -1,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0
+				}
+			},
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				["Clip1.OpenEXRFormat.RedName"] = Input { Value = FuID { "R" }, },
+				["Clip1.OpenEXRFormat.GreenName"] = Input { Value = FuID { "G" }, },
+				["Clip1.OpenEXRFormat.BlueName"] = Input { Value = FuID { "B" }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 1320, 16.5 } },
+		},
+		Loader4_2 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/output_stmap.exr",
+					FormatID = "OpenEXRFormat",
+					StartFrame = -1,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0
+				}
+			},
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				["Clip1.OpenEXRFormat.RedName"] = Input { Value = FuID { "R" }, },
+				["Clip1.OpenEXRFormat.GreenName"] = Input { Value = FuID { "G" }, },
+				["Clip1.OpenEXRFormat.BlueName"] = Input { Value = FuID { "B" }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 825, 148.5 } },
+		},
+		sRender1 = sRender {
+			Inputs = {
+				GlobalOut = Input { Value = 1, },
 				Width = Input { Value = 1920, },
 				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
 				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
-				TopLeftRed = Input { Value = 1, },
-				TopLeftGreen = Input { Value = 1, },
-				TopLeftBlue = Input { Value = 1, },
-			},
-			ViewInfo = OperatorInfo { Pos = { 165, 148.5 } },
-		},
-		Background1 = Background {
-			Inputs = {
-				GlobalOut = Input { Value = 0, },
-				Width = Input { Value = 1920, },
-				Height = Input { Value = 1080, },
-				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
-				TopLeftRed = Input { Value = 1, },
-				TopLeftGreen = Input { Value = 1, },
-				TopLeftBlue = Input { Value = 1, },
-			},
-			ViewInfo = OperatorInfo { Pos = { 275, 49.5 } },
-		},
-		sRectangle1 = sRectangle {
-			Inputs = {
-				["Translate.Y"] = Input { Value = 0.2, },
-				Width = Input { Value = 1.1, },
-				Height = Input { Value = 0.002, },
-				Red = Input { Value = 0, },
-				Green = Input { Value = 0, },
-				Blue = Input { Value = 0, },
-			},
-			ViewInfo = OperatorInfo { Pos = { 440, -49.5 } },
-		},
-		sTransform1 = sTransform {
-			Inputs = {
-				YOffset = Input { Value = -0.101, },
 				Input = Input {
-					SourceOp = "sRectangle1",
+					SourceOp = "sMerge3",
 					Source = "Output",
 				},
 			},
 			ViewInfo = OperatorInfo { Pos = { 330, -16.5 } },
 		},
-		sMerge2 = sMerge {
+		Saver3 = Saver {
 			Inputs = {
-				Input1 = Input {
-					SourceOp = "sRectangle1",
+				ProcessWhenBlendIs00 = Input { Value = 0, },
+				Clip = Input {
+					Value = Clip {
+						Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/grid_distorted.exr",
+						FormatID = "OpenEXRFormat",
+						Length = 0,
+						Saving = true,
+						TrimIn = 0,
+						ExtendFirst = 0,
+						ExtendLast = 0,
+						Loop = 1,
+						AspectMode = 0,
+						Depth = 0,
+						TimeCode = 0,
+						GlobalStart = -2000000000,
+						GlobalEnd = 0
+					},
+				},
+				OutputFormat = Input { Value = FuID { "OpenEXRFormat" }, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Input = Input {
+					SourceOp = "Merge4",
 					Source = "Output",
 				},
-				Input2 = Input {
-					SourceOp = "sTransform1",
+				["OpenEXRFormat.CompressionLevel"] = Input { Value = 4, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 935, 115.5 } },
+		},
+		sRectangle1_1 = sRectangle {
+			Inputs = {
+				["Translate.X"] = Input { Value = 0.3, },
+				Width = Input { Value = 1.1, },
+				Height = Input { Value = 0.002, },
+				Angle = Input { Value = 90, },
+				Red = Input { Value = 0, },
+				Green = Input { Value = 0, },
+				Blue = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 440, -214.5 } },
+		},
+		Transform1 = Transform {
+			PassThrough = true,
+			Inputs = {
+				Size = Input { Value = 1.266, },
+				Input = Input {
+					SourceOp = "LensDistort2",
 					Source = "Output",
 				},
 			},
-			ViewInfo = OperatorInfo { Pos = { 440, 16.5 } },
+			ViewInfo = OperatorInfo { Pos = { 660, 49.5 } },
+		},
+		Background2 = Background {
+			Inputs = {
+				GlobalOut = Input { Value = 1, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				TopLeftRed = Input { Value = 1, },
+				TopLeftGreen = Input { Value = 1, },
+				TopLeftBlue = Input { Value = 1, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 55, 49.5 } },
+		},
+		Merge2 = Merge {
+			Inputs = {
+				Background = Input {
+					SourceOp = "Background2",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "Instance_LensDistort2_1",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 165, 49.5 } },
 		},
 		sMerge1 = sMerge {
 			Inputs = {
@@ -85,29 +401,39 @@ Composition {
 					Source = "Output",
 				},
 			},
-			ViewInfo = OperatorInfo { Pos = { 440, 49.5 } },
+			ViewInfo = OperatorInfo { Pos = { 330, -115.5 } },
 		},
-		sRectangle1_1 = sRectangle {
+		Transform2 = Transform {
 			Inputs = {
-				["Translate.X"] = Input { Value = 0.3, },
-				Width = Input { Value = 1.1, },
-				Height = Input { Value = 0.002, },
-				Angle = Input { Value = 90, },
-				Red = Input { Value = 0, },
-				Green = Input { Value = 0, },
-				Blue = Input { Value = 0, },
-			},
-			ViewInfo = OperatorInfo { Pos = { 550, 16.5 } },
-		},
-		sTransform2 = sTransform {
-			Inputs = {
-				XOffset = Input { Value = -0.116, },
+				FlipVert = Input { Value = 1, },
 				Input = Input {
-					SourceOp = "sRectangle1_1",
+					SourceOp = "Merge2",
 					Source = "Output",
 				},
 			},
-			ViewInfo = OperatorInfo { Pos = { 605, 82.5 } },
+			ViewInfo = OperatorInfo { Pos = { 165, 82.5 } },
+		},
+		LensDistort2 = LensDistort {
+			Inputs = {
+				Mode = Input { Value = 0, },
+				LensDistortionModel = Input { Value = 1, },
+				["DEClassicLDModel.Distortion"] = Input { Value = 0.4, },
+				Input = Input {
+					SourceOp = "Loader2",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 660, 16.5 } },
+		},
+		sTransform1 = sTransform {
+			Inputs = {
+				YOffset = Input { Value = -0.101, },
+				Input = Input {
+					SourceOp = "sRectangle1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 220, -181.5 } },
 		},
 		sMerge3 = sMerge {
 			Inputs = {
@@ -120,21 +446,176 @@ Composition {
 					Source = "Output",
 				},
 			},
-			ViewInfo = OperatorInfo { Pos = { 440, 82.5 } },
+			ViewInfo = OperatorInfo { Pos = { 330, -82.5 } },
 		},
-		sRender1 = sRender {
+		Instance_LensDistort2 = LensDistort {
+			SourceOp = "LensDistort2",
 			Inputs = {
-				GlobalOut = Input { Value = 0, },
-				Width = Input { Value = 1920, },
-				Height = Input { Value = 1080, },
-				UseFrameFormatSettings = Input { Value = 1, },
-				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				EffectMask = Input { },
+				SettingsNest = Input { },
+				LensDistortionModel = Input { Value = 1, },
+				CameraSettings = Input { },
+				SamplingOptions = Input { },
+				Load = Input { },
 				Input = Input {
-					SourceOp = "sMerge3",
+					SourceOp = "Loader3",
+					Source = "Output",
+				},
+				CommentsNest = Input { },
+				FrameRenderScriptNest = Input { },
+				StartRenderScripts = Input { },
+				EndRenderScripts = Input { },
+			},
+			ViewInfo = OperatorInfo { Pos = { 880, 16.5 } },
+		},
+		Instance_LensDistort2_1 = LensDistort {
+			SourceOp = "LensDistort2",
+			Inputs = {
+				EffectMask = Input { },
+				SettingsNest = Input { },
+				LensDistortionModel = Input { Value = 1, },
+				CameraSettings = Input { },
+				SamplingOptions = Input { },
+				Load = Input { },
+				Input = Input {
+					SourceOp = "Merge1",
+					Source = "Output",
+				},
+				CommentsNest = Input { },
+				FrameRenderScriptNest = Input { },
+				StartRenderScripts = Input { },
+				EndRenderScripts = Input { },
+			},
+			ViewInfo = OperatorInfo { Pos = { 165, 16.5 } },
+		},
+		Instance_Texture3 = Texture {
+			SourceOp = "Texture3",
+			Inputs = {
+				EffectMask = Input { },
+				SettingsNest = Input { },
+				Input = Input {
+					SourceOp = "Loader5_1",
+					Source = "Output",
+				},
+				Texture = Input {
+					SourceOp = "Instance_Texture2",
+					Source = "Output",
+				},
+				CommentsNest = Input { },
+				FrameRenderScriptNest = Input { },
+				StartRenderScripts = Input { },
+				EndRenderScripts = Input { },
+			},
+			ViewInfo = OperatorInfo { Pos = { 1540, 49.5 } },
+		},
+		Instance_Transform1 = Transform {
+			PassThrough = true,
+			SourceOp = "Transform1",
+			Inputs = {
+				EffectMask = Input { },
+				SettingsNest = Input { },
+				TransformNest = Input { },
+				ReferenceSize = Input { },
+				Input = Input {
+					SourceOp = "Instance_LensDistort2",
+					Source = "Output",
+				},
+				CommentsNest = Input { },
+				FrameRenderScriptNest = Input { },
+				StartRenderScripts = Input { },
+				EndRenderScripts = Input { },
+			},
+			ViewInfo = OperatorInfo { Pos = { 935, 49.5 } },
+		},
+		Texture4 = Texture {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Loader4_2",
+					Source = "Output",
+				},
+				Texture = Input {
+					SourceOp = "Saver3",
 					Source = "Output",
 				},
 			},
-			ViewInfo = OperatorInfo { Pos = { 440, 148.5 } },
+			ViewInfo = OperatorInfo { Pos = { 935, 148.5 } },
+		},
+		Texture2 = Texture {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Loader4",
+					Source = "Output",
+				},
+				Texture = Input {
+					SourceOp = "Loader3_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 1210, 16.5 } },
+		},
+		Texture1 = Texture {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Loader1",
+					Source = "Output",
+				},
+				Texture = Input {
+					SourceOp = "Saver1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 165, 181.5 } },
+		},
+		Instance_Texture2 = Texture {
+			CtrlWZoom = false,
+			SourceOp = "Texture2",
+			Inputs = {
+				EffectMask = Input { },
+				SettingsNest = Input { },
+				Input = Input {
+					SourceOp = "Loader4_1",
+					Source = "Output",
+				},
+				Texture = Input {
+					SourceOp = "Loader6",
+					Source = "Output",
+				},
+				CommentsNest = Input { },
+				FrameRenderScriptNest = Input { },
+				StartRenderScripts = Input { },
+				EndRenderScripts = Input { },
+			},
+			ViewInfo = OperatorInfo { Pos = { 1540, 16.5 } },
+		},
+		Merge4 = Merge {
+			Inputs = {
+				Background = Input {
+					SourceOp = "Instance_Background3",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "Instance_Transform1",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 935, 82.5 } },
+		},
+		Instance_Background3 = Background {
+			SourceOp = "Background3",
+			Inputs = {
+				EffectMask = Input { },
+				SettingsNest = Input { },
+				ImageNest = Input { },
+				["Gamut.ColorSpaceNest"] = Input { },
+				["Gamut.GammaSpaceNest"] = Input { },
+				BackgroundNest = Input { },
+				CommentsNest = Input { },
+				FrameRenderScriptNest = Input { },
+				StartRenderScripts = Input { },
+				EndRenderScripts = Input { },
+			},
+			ViewInfo = OperatorInfo { Pos = { 825, 82.5 } },
 		},
 		Merge1 = Merge {
 			Inputs = {
@@ -148,36 +629,113 @@ Composition {
 				},
 				PerformDepthMerge = Input { Value = 0, },
 			},
-			ViewInfo = OperatorInfo { Pos = { 275, 82.5 } },
+			ViewInfo = OperatorInfo { Pos = { 165, -16.5 } },
 		},
-		LensDistort1 = LensDistort {
+		sTransform2 = sTransform {
 			Inputs = {
-				Mode = Input { Value = 0, },
-				LensDistortionModel = Input { Value = 1, },
-				["DEClassicLDModel.Distortion"] = Input { Value = 0.5, },
+				XOffset = Input { Value = -0.116, },
 				Input = Input {
-					SourceOp = "Merge1",
+					SourceOp = "sRectangle1_1",
 					Source = "Output",
 				},
 			},
-			ViewInfo = OperatorInfo { Pos = { 275, 115.5 } },
+			ViewInfo = OperatorInfo { Pos = { 440, -82.5 } },
 		},
-		Merge2 = Merge {
+		sMerge2 = sMerge {
+			Inputs = {
+				Input1 = Input {
+					SourceOp = "sRectangle1",
+					Source = "Output",
+				},
+				Input2 = Input {
+					SourceOp = "sTransform1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 330, -148.5 } },
+		},
+		Background1 = Background {
+			Inputs = {
+				GlobalOut = Input { Value = 1, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				TopLeftRed = Input { Value = 1, },
+				TopLeftGreen = Input { Value = 1, },
+				TopLeftBlue = Input { Value = 1, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 165, -49.5 } },
+		},
+		Saver2 = Saver {
+			Inputs = {
+				ProcessWhenBlendIs00 = Input { Value = 0, },
+				Clip = Input {
+					Value = Clip {
+						Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/checkerboard_distorted.exr",
+						FormatID = "OpenEXRFormat",
+						Length = 0,
+						Saving = true,
+						TrimIn = 0,
+						ExtendFirst = 0,
+						ExtendLast = 0,
+						Loop = 1,
+						AspectMode = 0,
+						Depth = 0,
+						TimeCode = 0,
+						GlobalStart = -2000000000,
+						GlobalEnd = 0
+					},
+				},
+				OutputFormat = Input { Value = FuID { "OpenEXRFormat" }, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Input = Input {
+					SourceOp = "Merge3",
+					Source = "Output",
+				},
+				["OpenEXRFormat.CompressionLevel"] = Input { Value = 4, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 660, 115.5 } },
+		},
+		Merge3 = Merge {
 			Inputs = {
 				Background = Input {
-					SourceOp = "Background2",
+					SourceOp = "Background3",
 					Source = "Output",
 				},
 				Foreground = Input {
-					SourceOp = "LensDistort1",
+					SourceOp = "Transform1",
 					Source = "Output",
 				},
 				PerformDepthMerge = Input { Value = 0, },
 			},
-			ViewInfo = OperatorInfo { Pos = { 275, 148.5 } },
+			ViewInfo = OperatorInfo { Pos = { 660, 82.5 } },
+		},
+		Background3 = Background {
+			Inputs = {
+				GlobalOut = Input { Value = 1, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				TopLeftRed = Input { Value = 1, },
+				TopLeftGreen = Input { Value = 1, },
+				TopLeftBlue = Input { Value = 1, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 550, 82.5 } },
+		},
+		Texture3 = Texture {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Loader5",
+					Source = "Output",
+				},
+				Texture = Input {
+					SourceOp = "Texture2",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 1210, 49.5 } },
 		},
 		Saver1 = Saver {
-			CtrlWZoom = false,
 			Inputs = {
 				ProcessWhenBlendIs00 = Input { Value = 0, },
 				Clip = Input {
@@ -192,6 +750,7 @@ Composition {
 						Loop = 1,
 						AspectMode = 0,
 						Depth = 0,
+						TimeCode = 0,
 						GlobalStart = -2000000000,
 						GlobalEnd = 0
 					},
@@ -199,12 +758,23 @@ Composition {
 				OutputFormat = Input { Value = FuID { "OpenEXRFormat" }, },
 				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
 				Input = Input {
-					SourceOp = "Merge2",
+					SourceOp = "Transform2",
 					Source = "Output",
 				},
 				["OpenEXRFormat.CompressionLevel"] = Input { Value = 4, },
 			},
-			ViewInfo = OperatorInfo { Pos = { 275, 181.5 } },
+			ViewInfo = OperatorInfo { Pos = { 165, 148.5 } },
+		},
+		sRectangle1 = sRectangle {
+			Inputs = {
+				["Translate.Y"] = Input { Value = 0.2, },
+				Width = Input { Value = 1.1, },
+				Height = Input { Value = 0.002, },
+				Red = Input { Value = 0, },
+				Green = Input { Value = 0, },
+				Blue = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 330, -214.5 } },
 		}
 	},
 	Frames = {
@@ -220,38 +790,48 @@ Composition {
 			ZoneInfo = {
 				["!Right"] = {
 				},
-				["!Left"] = {
+				["Right|(!Spline+!Keyframes+(Left|(!MediaPool+!Effects)))"] = {
 				},
 				AuxLeft = { Expanded = true },
+				["!Left"] = {
+				},
+				["!Right+(Spline|Keyframes|(!Left+(MediaPool|Effects)))"] = {
+				},
 				Right = { Expanded = true, },
 				Left = { Expanded = false, },
 				AuxRight = { Expanded = true }
 			},
 			ViewInfo = {
-				Viewer1 = { Show = true, RatioY = 0.01, RatioX = 1, },
+				Viewer1 = { Show = true, RatioY = 100, RatioX = 1, },
 				InnerLeft = {
 				},
 				MainSplit = {
 					RatioX = 100,
-					RatioY = 1.00233644859813,
+					RatioY = 1,
 				},
 				CenterSplit = {
 					RatioX = 1,
 					RatioY = 100,
 				},
-				Viewer2 = { Show = false, Adjust = true, RatioY = 0.01, MRU = 0, RatioX = 1, },
+				Viewer2 = { Show = false, Adjust = true, RatioY = 100, MRU = 0, RatioX = 1, },
 				Comments = { Show = false },
 				Time = { Show = true, RatioX = 100, },
+				PoolSplit = {
+				},
+				InspectorSplit = {
+				},
 				InnerColumns = {
 					RatioX = 100,
-					RatioY = 1.99766355140187,
+					RatioY = 1,
 				},
 				Keyframes = { Show = false, },
+				Inspector = { Show = true, RatioX = 100, RatioY = 1, MRU = 2, Adjust = false, },
 				LayoutStrip = { Show = true, RatioX = 100, },
-				Inspector = { Show = false, RatioY = 1, RatioX = 100, Adjust = true, MRU = 0 },
-				ActionStrip = { Show = true, RatioX = 100, },
 				InnerRight = {
 				},
+				SplineSplit = {
+				},
+				ActionStrip = { Show = true, RatioX = 100, },
 				OuterColumns = {
 					RatioX = 100,
 					RatioY = 1,
@@ -265,7 +845,7 @@ Composition {
 					RatioX = 100,
 					RatioY = 1,
 				},
-				Nodes = { Show = false, RatioY = 100, RatioX = 1, Adjust = true, MRU = 0 },
+				Nodes = { Show = true, RatioX = 1.07859963100978, RatioY = 100, MRU = 1, Adjust = false, },
 				OuterRight = {
 					RatioY = 100,
 					PixelX = 420,
@@ -298,8 +878,8 @@ Composition {
 						NavigatorSize = { 200, 140 },
 						Direction = "Vertical",
 						PipeStyle = "Orthogonal",
-						RootScale = 1,
-						RootOffset = { 70, -77.6667 }
+						RootScale = 0.698684,
+						RootOffset = { -703.31, 131.996 }
 					}
 				},
 				Keyframes = MultiView {
@@ -318,8 +898,8 @@ Composition {
 						ShowEditBoxes = false,
 						KeyFrameView = {
 							Position = { Left = 232, Bottom = 320 },
-							ScaleX = 2.14424951267057,
-							OffsetX = -51.4619883040936,
+							ScaleX = 0.00214424951267057,
+							OffsetX = -0.0514619883040936,
 							OffsetY = 0,
 							AutoScaling = "scroll",
 							AutoSnapTo = "frame",
@@ -473,11 +1053,11 @@ Composition {
 						Viewer = {
 							EnableLUTs = false,
 							LUTPlugin = "FusionViewLUT",
-							FitMarginY = 0,
+							NearZ = 0,
 							FitMarginX = 0,
 							FitMarginType = 0,
 							FarZ = -1000,
-							NearZ = 0
+							FitMarginY = 0
 						}
 					},
 				},
@@ -492,21 +1072,18 @@ Composition {
 						Viewer = {
 							EnableLUTs = false,
 							LUTPlugin = "FusionViewLUT",
-							FitMarginY = 0,
+							NearZ = 0,
 							FitMarginX = 0,
 							FitMarginType = 0,
 							FarZ = -1000,
-							NearZ = 0
+							FitMarginY = 0
 						}
 					},
 				},
 				View1 = {
 					PrevCtrlInactiveColor = 4278255360,
 					FullScreen = false,
-					PickW = 1,
 					PickH = 1,
-					AlwaysOnTop = true,
-					PrevCtrlActiveColor = 4278190335,
 					SideB = {
 						PrevCtrlInactiveColor = 4278255360,
 						PickW = 1,
@@ -515,13 +1092,16 @@ Composition {
 						Viewer = {
 							EnableLUTs = false,
 							LUTPlugin = "FusionViewLUT",
-							FitMarginY = 0,
+							NearZ = 0,
 							FitMarginX = 0,
 							FitMarginType = 0,
 							FarZ = -1000,
-							NearZ = 0
+							FitMarginY = 0
 						}
-					}
+					},
+					PrevCtrlActiveColor = 4278190335,
+					AlwaysOnTop = true,
+					PickW = 1
 				},
 			},
 			FrameFormat = {
@@ -542,40 +1122,40 @@ Composition {
 				}
 			},
 			Unsorted = {
-				GlobalEnd = 0,
+				GlobalEnd = 1,
 				RenderSettings = {
 					Configs = {
-						Final = {
-							Quality = true,
-							MotionBlur = true,
-							UpdateMode = "Some",
-							UseNetwork = false,
-							SizeType = 1,
-							CustomWidth = 200,
-							CustomHeight = 160,
-							CustomAspect = true,
-							StepRender = false,
-							StepSize = 5,
-							PriorityClasses = "all",
-							ShowRenderNodes = false
-						},
 						Preview = {
-							Quality = true,
+							StepRender = false,
+							PriorityClasses = "all",
+							ShowRenderNodes = false,
+							SizeType = 1,
+							CustomAspect = true,
+							CustomHeight = 160,
+							StepSize = 5,
+							CustomWidth = 200,
 							MotionBlur = true,
 							UpdateMode = "Some",
 							UseNetwork = false,
-							SizeType = 1,
-							CustomWidth = 200,
-							CustomHeight = 160,
-							CustomAspect = true,
+							Quality = true
+						},
+						Final = {
 							StepRender = false,
-							StepSize = 5,
 							PriorityClasses = "all",
-							ShowRenderNodes = false
+							ShowRenderNodes = false,
+							SizeType = 1,
+							CustomAspect = true,
+							CustomHeight = 160,
+							StepSize = 5,
+							CustomWidth = 200,
+							MotionBlur = true,
+							UpdateMode = "Some",
+							UseNetwork = false,
+							Quality = true
 						}
 					},
-					CurrentConfig = "Final",
-					PreviewConfig = "Preview"
+					PreviewConfig = "Preview",
+					CurrentConfig = "Final"
 				}
 			},
 			Paths = {

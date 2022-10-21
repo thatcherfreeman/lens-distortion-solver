@@ -1,48 +1,27 @@
 import numpy as np
-import cv2
-import os
-from tqdm import tqdm
 from typing import Tuple, List
+from scipy.ndimage import convolve, minimum_filter
+import matplotlib.pyplot as plt
+from sklearn.cluster import DBSCAN
 
+import images
 
-def open_image(image_fn: str) -> np.ndarray:
-    os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
-    img: np.ndarray = cv2.imread(image_fn, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
-    print(f"Read image data type of {img.dtype}")
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    # pre-reverse first axis
-    img = img[::-1, :, :]
-    return img
+def zero_out_edges(image: np.ndarray, border=0.05) -> np.ndarray:
+    num_rows, num_cols = int(border * image.shape[0]), int(border * image.shape[1])
+    image[:num_rows] *= 0
+    image[-num_rows:] *= 0
+    image[:, :num_cols] *= 0
+    image[:, -num_cols:] *= 0
+    return image
 
-def write_image(image_fn: str, img: np.ndarray):
-    os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
-    h,w,c = img.shape
-    if c < 3:
-        needed_channels = 3 - c
-        img = np.concatenate([img, np.zeros((h, w, needed_channels))], axis=2)
-    # Reverse first axis.
-    img = img[::-1, :, :]
-    img = img.astype(np.float32)
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    cv2.imwrite(image_fn, img)
-
-
-def default_stmap(height: int, width: int) -> np.ndarray:
-    return np.stack(np.meshgrid(
-        np.linspace(0, 1, width),
-        np.linspace(0, 1, height),
-    ), axis=2)
-
-
-def make_distort_stmap_from_model(fn, height: int, width: int) -> np.ndarray:
-    initial_stmap = default_stmap(height, width)
-    output_stmap = np.zeros_like(initial_stmap)
-    rows, columns, chans = initial_stmap.shape
-    for r in tqdm(range(rows)):
-        for c in range(columns):
-            xc, yc = fn(initial_stmap[r, c, 0] - 0.5, initial_stmap[r, c, 1] - 0.5)
-            output_stmap[r, c, :] = [xc + 0.5, yc + 0.5]
-    return output_stmap
+def get_coords_from_edges(edges: np.ndarray, t: float) -> List[Tuple[int]]:
+    # Takes in an image where edges are detected (mostly black, some white lines)
+    # then outputs (r, c) coordinates where the pixel in the image exceeds the
+    # threshold.
+    h, w, c = edges.shape
+    assert c == 1, "Expected one channel."
+    row_idx, col_idx = (edges.reshape((h, w)) > t).nonzero()
+    return [(r, c) for r, c in zip(row_idx, col_idx)]
 
 
 def convolution2d(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
@@ -50,102 +29,121 @@ def convolution2d(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     mi, ni, ci = image.shape
     assert c == ci, "mismatched channels."
     assert m == n, "kernel not square."
-    y, x = image.shape
-    y = y - m + 1
-    x = x - m + 1
-    new_image = np.zeros((y,x))
-    for i in range(y):
-        for j in range(x):
-            new_image[i][j] = np.sum(image[i:i+m, j:j+m]*kernel)
+    assert m % 2 == 1, "Kernel needs to have odd shape"
+    origin = int(-(m // 2))
+    new_image = convolve(
+        image,
+        kernel,
+        mode='nearest',
+        origin=(origin, origin, 0),
+    )
+    print(new_image.shape)
+    return new_image
+
+def minimum_filter_2d(image: np.ndarray, shape: Tuple) -> np.ndarray:
+    assert all([x % 2 == 1 for x in shape])
+    origin = (int(-(x // 2)) for x in shape)
+    new_image = minimum_filter(
+        image,
+        shape,
+        mode='constant',
+        cval=1.0,
+        origin=origin,
+    )
     return new_image
 
 
-def cubic_solver(a=0, b=0, c=0, d=0):
-    # Finds roots of polynomial ax^3 + 0x^2 + cx + d = 0
-    assert b == 0, "cubic solver only works with b=0"
-    if a == 0:
-        return -d / c
-    a, b, c, d = float(a), float(b), float(c), float(d)
+def get_threshold(image: np.ndarray) -> float:
+    # Identify a threshold which divides the bright and dark pixels in the image.
+    h, w, c = image.shape
+    assert c == 1
+    image = image.reshape((h*w,))
+    candidates = np.linspace(0.0, 1.0, 20)
+    quantities = np.array([np.mean(image < c) for c in candidates])
 
-    # Cardano's formula
-    c /= a
-    d /= a
-    Q = c / 3
-    R = -d / 2
-    delta = Q**3 + R**2
-    if delta > 0:
-        # One root.
-        C = (R + (delta**0.5))**(1/3)
-        return C - (Q / C)
-    else:
-        S: complex = (R + (delta**0.5))**(1/3)
-        T: complex = (R - (delta**0.5))**(1/3)
-        # out1: complex = S + T
-        # out2: complex = -(S + T) / 2 + (S - T) * 1j * (3**0.5) / 2
-        out3: complex = -(S + T) / 2 - (S - T) * 1j * (3**0.5) / 2
-        return out3.real
+    gain = [0] + list(quantities[1:] - quantities[:-1])
+    for i, (c, q, g) in enumerate(zip(candidates, quantities, gain)):
+        if q > 0.95 and g < 0.01:
+            return c
+    # plt.plot(candidates, quantities)
+    # plt.show()
 
-def bilinear_sample(image: np.ndarray, x: float, y: float) -> np.ndarray:
-    # Sample where (0, 0) is the top left corner of the image.
-    height, width, channels = image.shape
-    f_x = x * (width - 1)
-    f_y = y * (height - 1)
+    return 0.5
 
-    x_low = int(f_x)
-    x_high = int(f_x + 1)
-    y_low = int(f_y)
-    y_high = int(f_y + 1)
-    x_high = min(max(x_high, 0), width - 1)
-    y_high = min(max(y_high, 0), height - 1)
-    x_low = min(max(x_low, 0), width - 1)
-    y_low = min(max(y_low, 0), height - 1)
+def extract_key_points(edges: List[Tuple[int, int]], height: int, width: int, draw_images=False) -> List[List[Tuple[float, float]]]:
+    # Extracts 3 points from each line for use with parabola fitting.
+    # Identify which points are along the same line.
+    if len(edges) == 0:
+        return []
+    clustering_model = DBSCAN(eps=4/1000 * height, min_samples=5, n_jobs=-1)
+    npedges = np.array([list(x) for x in edges], dtype=int)
+    labels = clustering_model.fit_predict(npedges)
 
-    c_ll = image[y_low, x_low, :]
-    c_lh = image[y_high, x_low, :]
-    c_hl = image[y_low, x_high, :]
-    c_hh = image[y_high, x_high, :]
+    # Group dbscan output into clusters
+    clusters = {label: [] for label in range(-1, np.max(labels) + 1)}
+    for point, label in zip(npedges, labels):
+        clusters[label].append(point)
 
-    mix_x = f_x - x_low
-    mix_y = f_y - y_low
-    c_l = c_ll + (c_hl - c_ll) * mix_x
-    c_h = c_lh + (c_hh - c_lh) * mix_x
-    c = c_l + (c_h - c_l) * mix_y
-    return c
+    # Preprocess by removing unclustered pixels, small clusters
+    cluster_sizes = np.array([len(cluster) for cluster in clusters.values()])
+    t = 0.02 * np.sum(cluster_sizes)
+    clusters = {k: v for k,v in clusters.items() if len(v) > t}
+    if -1 in clusters:
+        del clusters[-1]
 
+    if draw_images:
+        colors = {
+            l: np.random.rand(3) for l in range(np.max(labels) + 1)
+        }
+        colors[-1] = np.ones(3)
+        output_image = np.zeros((height, width, 3))
+        for l, cluster in clusters.items():
+            for r,c in cluster:
+                output_image[r,c] = colors[l]
+        images.show_image(output_image)
 
-def apply_stmap(image: np.ndarray, stmap: np.ndarray, output_height: int, output_width: int) -> np.ndarray:
-    channels = image.shape[2]
-    output = np.zeros((output_height, output_width, channels))
-    for row in tqdm(range(output_height)):
-        for col in range(output_width):
-            x = col / (output_width - 1)
-            y = row / (output_height - 1)
+    output_points = []
+    for cluster in clusters.values():
+        # Make bounding box around points..
+        coords = np.array(cluster)
+        max_row = np.max(coords[:, 0])
+        min_row = np.min(coords[:, 0])
+        max_col = np.max(coords[:, 1])
+        min_col = np.min(coords[:, 1])
 
-            s, t = bilinear_sample(stmap, x, y)
-            color = bilinear_sample(image, s, t)
-            output[row, col] = color
-    return output
+        # Figure out if the box is tall or wide
+        if abs(max_row - min_row) > abs(max_col - min_col):
+            # Tall
+            top = np.mean(coords[coords[:, 0] == min_row], axis=0)
+            bottom = np.mean(coords[coords[:, 0] == max_row], axis=0)
+            mid_row = int((min_row + max_row) / 2)
+            mid = np.mean(coords[coords[:, 0] == mid_row], axis=0)
+            if abs(max_row - min_row) > 0.6 * height:
+                output_points.append([tuple(top), tuple(bottom), tuple(mid)])
+        else:
+            left = np.mean(coords[coords[:, 1] == min_col], axis=0)
+            right = np.mean(coords[coords[:, 1] == max_col], axis=0)
+            mid_col = int((min_col + max_col) / 2)
+            mid = np.mean(coords[coords[:, 1] == mid_col], axis=0)
+            if abs(max_col - min_col) > 0.6 * width:
+                output_points.append([tuple(left), tuple(right), tuple(mid)])
 
+    if draw_images:
+        output_image = np.zeros((1080, 1920, 3))
+        for three_points in output_points:
+            color = np.random.rand(3)
+            for r,c in three_points:
+                output_image[int(r)-2:int(r)+2, int(c)-2:int(c)+2] = color
+        images.show_image(output_image)
 
-def fit_parabola_horizontal_line(points: List[Tuple[float]]) -> Tuple[float, float, float]:
-    # Returns A, B, C for which:
-    # y = Ax**2 + Bx + C
-    x1, x2, x3 = points[0][0], points[1][0], points[2][0]
-    y1, y2, y3 = points[0][1], points[1][1], points[2][1]
-    denom = (x1 - x2) * (x1 - x3) * (x2 - x3)
-    A = (x3 * (y2 - y1) + x2 * (y1 - y3) + x1 * (y3 - y2)) / denom
-    B = (x3**2 * (y1 - y2) + x2**2 * (y3 - y1) + x1**2 * (y2 - y3)) / denom
-    C = (x2 * x3 * (x2 - x3) * y1 + x3 * x1 * (x3 - x1) * y2 + x1 * x2 * (x1 - x2) * y3) / denom
-    return (A, B, C)
-
-def fit_parabola_vertical_line(points: List[Tuple[float]]) -> Tuple[float, float, float]:
-    # Returns A, B, C for which:
-    # x = Ay**2 + By + C
-    inverted_points = [(y, x) for x,y in points]
-    return fit_parabola_horizontal_line(inverted_points)
+    return output_points
 
 def convert_uv_to_xy(u, v, aspect) -> Tuple[float, float]:
     # Assumes u,v have (0,0) in the top left corner. Returns x,y where (0,0) is the center.
     x,y = u - 0.5, v-0.5
     x *= aspect
     return x,y
+
+def convert_xy_to_rc(x, y, height, width) -> Tuple[int, int]:
+    aspect = width / height
+    return int((y + 0.5) * (height - 1)), int((x/aspect + 0.5) * (width - 1))
