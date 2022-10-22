@@ -47,7 +47,6 @@ class first_order_spherical:
         r1 = ((0.5 * self.aspect)**2 + 0.5**2)**0.5 / ((p1[0] * self.aspect)**2 + p1[1]**2)**0.5
         r2 = ((0.0 * self.aspect)**2 + 0.5**2)**0.5 / ((p2[0] * self.aspect)**2 + p2[1]**2)**0.5
         self.rescale_factor = min(r1, r2)
-        print(r1, r2)
         print(f"selected rescale factor {self.rescale_factor}")
 
 class parabola:

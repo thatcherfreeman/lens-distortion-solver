@@ -63,10 +63,10 @@ def get_threshold(image: np.ndarray) -> float:
 
     gain = [0] + list(quantities[1:] - quantities[:-1])
     for i, (c, q, g) in enumerate(zip(candidates, quantities, gain)):
-        if q > 0.95 and g < 0.01:
+        if q > 0.98 and g < 0.01:
             return c
-    # plt.plot(candidates, quantities)
-    # plt.show()
+    plt.plot(candidates, quantities)
+    plt.show()
 
     return 0.5
 
@@ -129,7 +129,7 @@ def extract_key_points(edges: List[Tuple[int, int]], height: int, width: int, dr
                 output_points.append([tuple(left), tuple(right), tuple(mid)])
 
     if draw_images:
-        output_image = np.zeros((1080, 1920, 3))
+        output_image = np.zeros((height, width, 3))
         for three_points in output_points:
             color = np.random.rand(3)
             for r,c in three_points:
