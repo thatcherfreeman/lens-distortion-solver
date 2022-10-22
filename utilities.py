@@ -65,8 +65,8 @@ def get_threshold(image: np.ndarray) -> float:
     for i, (c, q, g) in enumerate(zip(candidates, quantities, gain)):
         if q > 0.98 and g < 0.01:
             return c
-    plt.plot(candidates, quantities)
-    plt.show()
+    # plt.plot(candidates, quantities)
+    # plt.show()
 
     return 0.5
 
