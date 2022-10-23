@@ -1,6 +1,6 @@
 import numpy as np
-from typing import Tuple, List
-from scipy.ndimage import convolve, minimum_filter
+from typing import Tuple, List, Union, Literal
+from scipy.ndimage import convolve, minimum_filter, gaussian_laplace, gaussian_gradient_magnitude
 import matplotlib.pyplot as plt
 from sklearn.cluster import DBSCAN
 
@@ -40,6 +40,21 @@ def convolution2d(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     print(new_image.shape)
     return new_image
 
+def get_edges(image: np.ndarray, direction: Union[Literal['vertical'], Literal['horizontal']]) -> np.ndarray:
+    h, w, c = image.shape
+    window_size = int((h * 0.02) // 2 * 2 + 1)
+    if direction == 'vertical':
+        sigma = (window_size, 0, 0)
+        shape = (window_size, 1, 1)
+    elif direction == 'horizontal':
+        sigma = (0, window_size, 0)
+        shape = (1, window_size, 1)
+    else:
+        raise NotImplementedError(f"Unexpected edge direction {direction}")
+    new_image = 1 - gaussian_laplace(image, sigma=sigma, mode='nearest')
+    # new_image = minimum_filter_2d(1 - image, shape)
+    return new_image
+
 def minimum_filter_2d(image: np.ndarray, shape: Tuple) -> np.ndarray:
     assert all([x % 2 == 1 for x in shape])
     origin = (int(-(x // 2)) for x in shape)
@@ -53,20 +68,21 @@ def minimum_filter_2d(image: np.ndarray, shape: Tuple) -> np.ndarray:
     return new_image
 
 
-def get_threshold(image: np.ndarray) -> float:
+def get_threshold(image: np.ndarray, draw_images=False) -> float:
     # Identify a threshold which divides the bright and dark pixels in the image.
     h, w, c = image.shape
     assert c == 1
     image = image.reshape((h*w,))
     candidates = np.linspace(0.0, 1.0, 20)
     quantities = np.array([np.mean(image < c) for c in candidates])
-
+    if draw_images:
+        plt.plot(candidates, quantities)
+        plt.show()
     gain = [0] + list(quantities[1:] - quantities[:-1])
     for i, (c, q, g) in enumerate(zip(candidates, quantities, gain)):
-        if q > 0.98 and g < 0.01:
+        if q > 0.95 and g < 0.01:
             return c
-    # plt.plot(candidates, quantities)
-    # plt.show()
+
 
     return 0.5
 
@@ -118,14 +134,14 @@ def extract_key_points(edges: List[Tuple[int, int]], height: int, width: int, dr
             bottom = np.mean(coords[coords[:, 0] == max_row], axis=0)
             mid_row = int((min_row + max_row) / 2)
             mid = np.mean(coords[coords[:, 0] == mid_row], axis=0)
-            if abs(max_row - min_row) > 0.6 * height:
+            if len(cluster) > 100:
                 output_points.append([tuple(top), tuple(bottom), tuple(mid)])
         else:
             left = np.mean(coords[coords[:, 1] == min_col], axis=0)
             right = np.mean(coords[coords[:, 1] == max_col], axis=0)
             mid_col = int((min_col + max_col) / 2)
             mid = np.mean(coords[coords[:, 1] == mid_col], axis=0)
-            if abs(max_col - min_col) > 0.6 * width:
+            if len(cluster) > 100:
                 output_points.append([tuple(left), tuple(right), tuple(mid)])
 
     if draw_images:

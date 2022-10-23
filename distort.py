@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-import sys
+import os
 from typing import List, Tuple, Dict
 import numpy as np
 import matplotlib.pyplot as plt
@@ -59,17 +59,15 @@ if __name__ == "__main__":
     img_gray = np.mean(img, axis=2, keepdims=True)
     max_val, min_val = np.max(img_gray), np.min(img_gray)
     img_gray = (img_gray - min_val) / (max_val - min_val)
-    window_size = int((img_height * 0.01) // 2 * 2 + 1)
-    print(f"Running minimum filter with length {window_size}")
-    vertical_edges = utilities.zero_out_edges(utilities.minimum_filter_2d((1 - img_gray), (window_size, 1, 1)))
-    horizontal_edges = utilities.zero_out_edges(utilities.minimum_filter_2d((1 - img_gray), (1, window_size, 1)))
+    vertical_edges = utilities.zero_out_edges(utilities.get_edges(img_gray, 'vertical'))
+    horizontal_edges = utilities.zero_out_edges(utilities.get_edges(img_gray, 'horizontal'))
     if args.draw_images:
         images.show_image(img_gray)
         images.show_image(vertical_edges)
         images.show_image(horizontal_edges)
 
     print("Identifying appropriate threshold for edge detection...")
-    t = utilities.get_threshold(vertical_edges)
+    t = utilities.get_threshold(vertical_edges, draw_images=args.draw_images)
     print(f"Selected edge detection threshold of {t}")
 
     vertical_edge_coords = utilities.get_coords_from_edges(vertical_edges, t)
@@ -114,27 +112,41 @@ if __name__ == "__main__":
 
     # Estimate k
     k_estimates = [p.estimate_k() for p in parabolas]
-    if args.draw_images:
-        plt.scatter([abs(p.c) for p in parabolas], k_estimates)
-        plt.show()
     # Remove outliers from k_estimates
-    weights = np.array([abs(p.c) for p in parabolas])
-
+    low, high = np.quantile(k_estimates, q=[0.1, 0.9])
+    weights = []
+    for p, k in zip(parabolas, k_estimates):
+        weight = abs(p.c)
+        if not (low < k and k < high):
+            weight *= 0
+        weights.append(weight)
+    weights = np.array(weights)
     k = np.average(
         k_estimates,
         weights=weights,
     )
     if args.k is not None:
         k = args.k
+    if args.draw_images:
+        plt.scatter([p.c for p in parabolas], k_estimates)
+        plt.axhline(y=k)
+        plt.show()
     print(f"Using distortion paramter k = {k}")
 
     model = first_order_spherical(k, aspect)
+    target_dir = os.path.join(os.path.curdir, os.path.dirname(args.filename))
+    print("Making undistortion stmap")
     output_stmap = stmaps.make_distort_stmap_from_model(model.reverse, stmap_height, stmap_width)
-    images.write_image("sample_images/output_stmap.exr", output_stmap)
+    output_path = os.path.join(target_dir, "output_stmap.exr")
+    print(f"Writing to {output_path}")
+    images.write_image(output_path, output_stmap)
     # img_undistorted = stmaps.apply_stmap(img, output_stmap, stmap_height, stmap_width)
     # images.write_image("sample_images/undistorted.exr", img_undistorted)
+    print("Making redistortion stmap")
     redistort_stmap = stmaps.make_distort_stmap_from_model(model.forward, stmap_height, stmap_width)
-    images.write_image("sample_images/output_reverse_stmap.exr", redistort_stmap)
+    output_path = os.path.join(target_dir,  "output_reverse_stmap.exr")
+    print(f"Writing to {output_path}")
+    images.write_image(output_path, redistort_stmap)
     # img_redistorted = stmaps.apply_stmap(img_undistorted, redistort_stmap, stmap_height, stmap_width)
     # images.write_image("sample_images/redistorted.exr", img_redistorted)
 

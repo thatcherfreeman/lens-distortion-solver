@@ -2,7 +2,7 @@ Composition {
 	CurrentTime = 0,
 	RenderRange = { 0, 0 },
 	GlobalRange = { 0, 1 },
-	CurrentID = 607,
+	CurrentID = 869,
 	HiQ = true,
 	PlaybackUpdateMode = 0,
 	Version = "Fusion Studio 18.0.4 build 5",
@@ -102,34 +102,6 @@ Composition {
 			},
 			ViewInfo = OperatorInfo { Pos = { 1650, 49.5 } },
 		},
-		Loader4_2 = Loader {
-			Clips = {
-				Clip {
-					ID = "Clip1",
-					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/output_stmap.exr",
-					FormatID = "OpenEXRFormat",
-					StartFrame = -1,
-					LengthSetManually = true,
-					TrimIn = 0,
-					TrimOut = 0,
-					ExtendFirst = 0,
-					ExtendLast = 0,
-					Loop = 0,
-					AspectMode = 0,
-					Depth = 0,
-					TimeCode = 0,
-					GlobalStart = 0,
-					GlobalEnd = 0
-				}
-			},
-			Inputs = {
-				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
-				["Clip1.OpenEXRFormat.RedName"] = Input { Value = FuID { "R" }, },
-				["Clip1.OpenEXRFormat.GreenName"] = Input { Value = FuID { "G" }, },
-				["Clip1.OpenEXRFormat.BlueName"] = Input { Value = FuID { "B" }, },
-			},
-			ViewInfo = OperatorInfo { Pos = { 825, 148.5 } },
-		},
 		Loader2 = Loader {
 			Clips = {
 				Clip {
@@ -192,9 +164,10 @@ Composition {
 			Clips = {
 				Clip {
 					ID = "Clip1",
-					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/IMG_3329.jpg",
+					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/IMG_3332.JPG",
 					FormatID = "JpegFormat",
 					StartFrame = 3329,
+					Length = 4,
 					LengthSetManually = true,
 					TrimIn = 0,
 					TrimOut = 0,
@@ -208,7 +181,6 @@ Composition {
 					GlobalEnd = 0
 				}
 			},
-			CtrlWZoom = false,
 			Inputs = {
 				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
 			},
@@ -242,6 +214,34 @@ Composition {
 				["Clip1.OpenEXRFormat.AlphaName"] = Input { Value = FuID { "A" }, },
 			},
 			ViewInfo = OperatorInfo { Pos = { 1100, -49.5 } },
+		},
+		Loader4_2 = Loader {
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Filename = "/Users/thatcher/coding/lens-distortion-solver/sample_images/output_stmap.exr",
+					FormatID = "OpenEXRFormat",
+					StartFrame = -1,
+					LengthSetManually = true,
+					TrimIn = 0,
+					TrimOut = 0,
+					ExtendFirst = 0,
+					ExtendLast = 0,
+					Loop = 0,
+					AspectMode = 0,
+					Depth = 0,
+					TimeCode = 0,
+					GlobalStart = 0,
+					GlobalEnd = 0
+				}
+			},
+			Inputs = {
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				["Clip1.OpenEXRFormat.RedName"] = Input { Value = FuID { "R" }, },
+				["Clip1.OpenEXRFormat.GreenName"] = Input { Value = FuID { "G" }, },
+				["Clip1.OpenEXRFormat.BlueName"] = Input { Value = FuID { "B" }, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 825, 247.5 } },
 		},
 		Loader4 = Loader {
 			Clips = {
@@ -336,12 +336,12 @@ Composition {
 				OutputFormat = Input { Value = FuID { "OpenEXRFormat" }, },
 				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
 				Input = Input {
-					SourceOp = "Merge4",
+					SourceOp = "Grain1",
 					Source = "Output",
 				},
 				["OpenEXRFormat.CompressionLevel"] = Input { Value = 4, },
 			},
-			ViewInfo = OperatorInfo { Pos = { 935, 115.5 } },
+			ViewInfo = OperatorInfo { Pos = { 935, 214.5 } },
 		},
 		sRectangle1_1 = sRectangle {
 			Inputs = {
@@ -354,6 +354,19 @@ Composition {
 				Blue = Input { Value = 0, },
 			},
 			ViewInfo = OperatorInfo { Pos = { 440, -214.5 } },
+		},
+		Resize1 = BetterResize {
+			Inputs = {
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				HiQOnly = Input { Value = 0, },
+				PixelAspect = Input { Value = { 1, 1 }, },
+				Input = Input {
+					SourceOp = "Loader6",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 1540, -16.5 } },
 		},
 		Transform1 = Transform {
 			PassThrough = true,
@@ -437,6 +450,19 @@ Composition {
 			},
 			ViewInfo = OperatorInfo { Pos = { 220, -181.5 } },
 		},
+		Texture4 = Texture {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Loader4_2",
+					Source = "Output",
+				},
+				Texture = Input {
+					SourceOp = "Saver3",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 935, 247.5 } },
+		},
 		sMerge3 = sMerge {
 			Inputs = {
 				Input1 = Input {
@@ -450,25 +476,29 @@ Composition {
 			},
 			ViewInfo = OperatorInfo { Pos = { 330, -82.5 } },
 		},
-		Instance_LensDistort2 = LensDistort {
-			SourceOp = "LensDistort2",
+		Grain1Blue = LUTBezier {
+			KeyColorSplines = {
+				[0] = {
+					[0] = { 1, RH = { 0.333333333333333, 1 }, Flags = { Linear = true } },
+					[1] = { 1, LH = { 0.666666666666667, 1 }, Flags = { Linear = true } }
+				}
+			},
+			SplineColor = { Red = 0, Green = 0, Blue = 0 },
+			CtrlWZoom = false,
+		},
+		Texture1 = Texture {
+			CtrlWZoom = false,
 			Inputs = {
-				EffectMask = Input { },
-				SettingsNest = Input { },
-				LensDistortionModel = Input { Value = 1, },
-				CameraSettings = Input { },
-				SamplingOptions = Input { },
-				Load = Input { },
 				Input = Input {
-					SourceOp = "Loader3",
+					SourceOp = "Loader1",
 					Source = "Output",
 				},
-				CommentsNest = Input { },
-				FrameRenderScriptNest = Input { },
-				StartRenderScripts = Input { },
-				EndRenderScripts = Input { },
+				Texture = Input {
+					SourceOp = "Saver1",
+					Source = "Output",
+				},
 			},
-			ViewInfo = OperatorInfo { Pos = { 880, 16.5 } },
+			ViewInfo = OperatorInfo { Pos = { 165, 181.5 } },
 		},
 		Instance_LensDistort2_1 = LensDistort {
 			SourceOp = "LensDistort2",
@@ -490,17 +520,50 @@ Composition {
 			},
 			ViewInfo = OperatorInfo { Pos = { 165, 16.5 } },
 		},
-		Instance_Texture3 = Texture {
-			SourceOp = "Texture3",
+		Grain1Green = LUTBezier {
+			KeyColorSplines = {
+				[0] = {
+					[0] = { 1, RH = { 0.333333333333333, 1 }, Flags = { Linear = true } },
+					[1] = { 1, LH = { 0.666666666666667, 1 }, Flags = { Linear = true } }
+				}
+			},
+			SplineColor = { Red = 0, Green = 0, Blue = 0 },
+			CtrlWZoom = false,
+		},
+		Grain1Red = LUTBezier {
+			KeyColorSplines = {
+				[0] = {
+					[0] = { 1, RH = { 0.333333333333333, 1 }, Flags = { Linear = true } },
+					[1] = { 1, LH = { 0.666666666666667, 1 }, Flags = { Linear = true } }
+				}
+			},
+			SplineColor = { Red = 0, Green = 0, Blue = 0 },
+			CtrlWZoom = false,
+		},
+		Texture2 = Texture {
+			Inputs = {
+				Input = Input {
+					SourceOp = "Loader4",
+					Source = "Output",
+				},
+				Texture = Input {
+					SourceOp = "Loader3_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 1210, 16.5 } },
+		},
+		Instance_Texture2 = Texture {
+			SourceOp = "Texture2",
 			Inputs = {
 				EffectMask = Input { },
 				SettingsNest = Input { },
 				Input = Input {
-					SourceOp = "Loader5_1",
+					SourceOp = "Loader4_1",
 					Source = "Output",
 				},
 				Texture = Input {
-					SourceOp = "Instance_Texture2",
+					SourceOp = "Resize1",
 					Source = "Output",
 				},
 				CommentsNest = Input { },
@@ -508,7 +571,35 @@ Composition {
 				StartRenderScripts = Input { },
 				EndRenderScripts = Input { },
 			},
-			ViewInfo = OperatorInfo { Pos = { 1540, 49.5 } },
+			ViewInfo = OperatorInfo { Pos = { 1540, 16.5 } },
+		},
+		Merge1 = Merge {
+			Inputs = {
+				Background = Input {
+					SourceOp = "Background1",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "sRender1",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 165, -16.5 } },
+		},
+		Merge4 = Merge {
+			Inputs = {
+				Background = Input {
+					SourceOp = "Instance_Background3",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "Instance_Transform1",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 935, 82.5 } },
 		},
 		Instance_Transform1 = Transform {
 			PassThrough = true,
@@ -529,56 +620,17 @@ Composition {
 			},
 			ViewInfo = OperatorInfo { Pos = { 935, 49.5 } },
 		},
-		Texture4 = Texture {
-			Inputs = {
-				Input = Input {
-					SourceOp = "Loader4_2",
-					Source = "Output",
-				},
-				Texture = Input {
-					SourceOp = "Saver3",
-					Source = "Output",
-				},
-			},
-			ViewInfo = OperatorInfo { Pos = { 935, 148.5 } },
-		},
-		Texture2 = Texture {
-			Inputs = {
-				Input = Input {
-					SourceOp = "Loader4",
-					Source = "Output",
-				},
-				Texture = Input {
-					SourceOp = "Loader3_1",
-					Source = "Output",
-				},
-			},
-			ViewInfo = OperatorInfo { Pos = { 1210, 16.5 } },
-		},
-		Texture1 = Texture {
-			Inputs = {
-				Input = Input {
-					SourceOp = "Loader1",
-					Source = "Output",
-				},
-				Texture = Input {
-					SourceOp = "Saver1",
-					Source = "Output",
-				},
-			},
-			ViewInfo = OperatorInfo { Pos = { 165, 181.5 } },
-		},
-		Instance_Texture2 = Texture {
-			SourceOp = "Texture2",
+		Instance_LensDistort2 = LensDistort {
+			SourceOp = "LensDistort2",
 			Inputs = {
 				EffectMask = Input { },
 				SettingsNest = Input { },
+				LensDistortionModel = Input { Value = 1, },
+				CameraSettings = Input { },
+				SamplingOptions = Input { },
+				Load = Input { },
 				Input = Input {
-					SourceOp = "Loader4_1",
-					Source = "Output",
-				},
-				Texture = Input {
-					SourceOp = "Loader6",
+					SourceOp = "Loader3",
 					Source = "Output",
 				},
 				CommentsNest = Input { },
@@ -586,21 +638,75 @@ Composition {
 				StartRenderScripts = Input { },
 				EndRenderScripts = Input { },
 			},
-			ViewInfo = OperatorInfo { Pos = { 1540, 16.5 } },
+			ViewInfo = OperatorInfo { Pos = { 880, 16.5 } },
 		},
-		Merge4 = Merge {
+		Texture3 = Texture {
 			Inputs = {
-				Background = Input {
-					SourceOp = "Instance_Background3",
+				Input = Input {
+					SourceOp = "Loader5",
 					Source = "Output",
 				},
-				Foreground = Input {
-					SourceOp = "Instance_Transform1",
+				Texture = Input {
+					SourceOp = "Texture2",
 					Source = "Output",
 				},
-				PerformDepthMerge = Input { Value = 0, },
 			},
-			ViewInfo = OperatorInfo { Pos = { 935, 82.5 } },
+			ViewInfo = OperatorInfo { Pos = { 1210, 49.5 } },
+		},
+		Instance_Texture3 = Texture {
+			CtrlWZoom = false,
+			SourceOp = "Texture3",
+			Inputs = {
+				EffectMask = Input { },
+				SettingsNest = Input { },
+				Input = Input {
+					SourceOp = "Loader5_1",
+					Source = "Output",
+				},
+				Texture = Input {
+					SourceOp = "Instance_Texture2",
+					Source = "Output",
+				},
+				CommentsNest = Input { },
+				FrameRenderScriptNest = Input { },
+				StartRenderScripts = Input { },
+				EndRenderScripts = Input { },
+			},
+			ViewInfo = OperatorInfo { Pos = { 1540, 49.5 } },
+		},
+		Background1 = Background {
+			Inputs = {
+				GlobalOut = Input { Value = 1, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				TopLeftRed = Input { Value = 1, },
+				TopLeftGreen = Input { Value = 1, },
+				TopLeftBlue = Input { Value = 1, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 165, -49.5 } },
+		},
+		Grain1 = Grain {
+			Inputs = {
+				Power = Input { Value = 8.19, },
+				Red = Input {
+					SourceOp = "Grain1Red",
+					Source = "Value",
+				},
+				Green = Input {
+					SourceOp = "Grain1Green",
+					Source = "Value",
+				},
+				Blue = Input {
+					SourceOp = "Grain1Blue",
+					Source = "Value",
+				},
+				Input = Input {
+					SourceOp = "ColorGain1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 935, 181.5 } },
 		},
 		Instance_Background3 = Background {
 			SourceOp = "Background3",
@@ -617,55 +723,6 @@ Composition {
 				EndRenderScripts = Input { },
 			},
 			ViewInfo = OperatorInfo { Pos = { 825, 82.5 } },
-		},
-		Merge1 = Merge {
-			Inputs = {
-				Background = Input {
-					SourceOp = "Background1",
-					Source = "Output",
-				},
-				Foreground = Input {
-					SourceOp = "sRender1",
-					Source = "Output",
-				},
-				PerformDepthMerge = Input { Value = 0, },
-			},
-			ViewInfo = OperatorInfo { Pos = { 165, -16.5 } },
-		},
-		sTransform2 = sTransform {
-			Inputs = {
-				XOffset = Input { Value = -0.116, },
-				Input = Input {
-					SourceOp = "sRectangle1_1",
-					Source = "Output",
-				},
-			},
-			ViewInfo = OperatorInfo { Pos = { 440, -82.5 } },
-		},
-		sMerge2 = sMerge {
-			Inputs = {
-				Input1 = Input {
-					SourceOp = "sRectangle1",
-					Source = "Output",
-				},
-				Input2 = Input {
-					SourceOp = "sTransform1",
-					Source = "Output",
-				},
-			},
-			ViewInfo = OperatorInfo { Pos = { 330, -148.5 } },
-		},
-		Background1 = Background {
-			Inputs = {
-				GlobalOut = Input { Value = 1, },
-				Width = Input { Value = 1920, },
-				Height = Input { Value = 1080, },
-				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
-				TopLeftRed = Input { Value = 1, },
-				TopLeftGreen = Input { Value = 1, },
-				TopLeftBlue = Input { Value = 1, },
-			},
-			ViewInfo = OperatorInfo { Pos = { 165, -49.5 } },
 		},
 		Saver2 = Saver {
 			Inputs = {
@@ -723,18 +780,81 @@ Composition {
 			},
 			ViewInfo = OperatorInfo { Pos = { 550, 82.5 } },
 		},
-		Texture3 = Texture {
+		ColorGain1 = ColorGain {
+			CtrlWZoom = false,
 			Inputs = {
-				Input = Input {
-					SourceOp = "Loader5",
-					Source = "Output",
+				EffectMask = Input {
+					SourceOp = "Ellipse1",
+					Source = "Mask",
 				},
-				Texture = Input {
-					SourceOp = "Texture2",
+				LockRGB = Input { Value = 1, },
+				GainRed = Input { Value = 0.34, },
+				GammaRed = Input { Value = 0.3, },
+				ColorRanges = Input {
+					Value = ColorCurves {
+						Curves = {
+							{
+								Points = {
+									{ 0, 1 },
+									{ 0.125, 0.75 },
+									{ 0.375, 0.25 },
+									{ 0.5, 0 }
+								}
+							},
+							{
+								Points = {
+									{ 0.5, 0 },
+									{ 0.625, 0.25 },
+									{ 0.875, 0.75 },
+									{ 1, 1 }
+								}
+							}
+						}
+					},
+				},
+				Input = Input {
+					SourceOp = "Merge4",
 					Source = "Output",
 				},
 			},
-			ViewInfo = OperatorInfo { Pos = { 1210, 49.5 } },
+			ViewInfo = OperatorInfo { Pos = { 935, 115.5 } },
+		},
+		sTransform2 = sTransform {
+			Inputs = {
+				XOffset = Input { Value = -0.116, },
+				Input = Input {
+					SourceOp = "sRectangle1_1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 440, -82.5 } },
+		},
+		sMerge2 = sMerge {
+			Inputs = {
+				Input1 = Input {
+					SourceOp = "sRectangle1",
+					Source = "Output",
+				},
+				Input2 = Input {
+					SourceOp = "sTransform1",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 330, -148.5 } },
+		},
+		Ellipse1 = EllipseMask {
+			Inputs = {
+				Filter = Input { Value = FuID { "Fast Gaussian" }, },
+				SoftEdge = Input { Value = 0.4, },
+				Invert = Input { Value = 1, },
+				MaskWidth = Input { Value = 1920, },
+				MaskHeight = Input { Value = 1080, },
+				PixelAspect = Input { Value = { 1, 1 }, },
+				ClippingMode = Input { Value = FuID { "None" }, },
+				Width = Input { Value = 0.6, },
+				Height = Input { Value = 0.6, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 825, 115.5 } },
 		},
 		Saver1 = Saver {
 			Inputs = {
@@ -783,7 +903,7 @@ Composition {
 			FrameTypeID = "ChildFrame",
 			Mode = 3,
 			LayoutPreset = 0,
-			PresetName = "Left Flow",
+			PresetName = "Default",
 			Left = 0,
 			Top = 27,
 			Width = 1680,
@@ -801,59 +921,68 @@ Composition {
 			ViewInfo = {
 				Viewer1 = { Show = true, RatioY = 0.01, RatioX = 1, },
 				InnerLeft = {
-					RatioX = 0.500545658743154,
+					RatioX = 0.500580120233584,
 					RatioY = 100,
 				},
-				ActionStrip = { Show = true, RatioX = 100, },
 				InnerBottom = {
 				},
 				Viewer2 = { Show = false, Adjust = true, RatioY = 0.01, MRU = 0, RatioX = 1, },
 				Comments = { Show = false },
-				UpperMainSplit = {
-				},
-				UpperSplit = {
-					RatioX = 100,
-					RatioY = 1,
-				},
 				Time = { Show = true, RatioX = 100, },
-				MediaPool = { Show = false, },
-				InnerRows = {
-					RatioX = 1,
-					RatioY = 100,
-				},
 				ActionColumns = {
 					RatioX = 100,
-					RatioY = 1,
-				},
-				OuterLeft = {
+					RatioY = 1
 				},
 				OuterBottom = {
 				},
-				Keyframes = { Show = false, },
-				InnerRight = {
-				},
-				LayoutStrip = { Show = true, RatioX = 100, },
-				Inspector = { Show = true, RatioX = 100, RatioY = 3, MRU = 2, Adjust = false, },
-				ActionRows = {
-					RatioX = 1,
-					RatioY = 100,
-				},
-				LowerMainSplit = {
-				},
+				MediaPool = { Show = false, },
 				OuterColumns = {
 					RatioX = 100,
 					RatioY = 1,
 				},
 				Effects = { Show = false, },
 				Clips = { Show = false, },
-				Metadata = { Show = false, },
 				SplineRows = {
 					RatioX = 1,
-					RatioY = 100,
+					RatioY = 100
 				},
 				ViewerSplit = {
 					RatioX = 100,
 					RatioY = 1,
+				},
+				UpperMainSplit = {
+				},
+				Spline = { Show = false, },
+				MainSplit = {
+					RatioX = 100,
+					RatioY = 0.998831775700936,
+				},
+				CenterSplit = {
+					RatioX = 1,
+					RatioY = 100,
+				},
+				OuterLeft = {
+				},
+				InnerRows = {
+					RatioX = 1,
+					RatioY = 100
+				},
+				Keyframes = { Show = false, },
+				LayoutStrip = { Show = true, RatioX = 100, },
+				InnerRight = {
+				},
+				InnerColumns = {
+					RatioX = 100,
+					RatioY = 2.00116822429907,
+				},
+				ActionRows = {
+					RatioX = 1,
+					RatioY = 100
+				},
+				ActionStrip = { Show = true, RatioX = 100, },
+				Inspector = { Show = true, RatioX = 100, RatioY = 3, MRU = 1, Adjust = false, },
+				Metadata = { Show = false, },
+				LowerMainSplit = {
 				},
 				Nodes = { Show = true, RatioX = 100, RatioY = 2, MRU = 1, Adjust = false, },
 				OuterRight = {
@@ -862,9 +991,12 @@ Composition {
 				},
 				LeftColumns = {
 					RatioX = 100,
-					RatioY = 1,
+					RatioY = 1
 				},
-				Spline = { Show = false, }
+				UpperSplit = {
+					RatioX = 100,
+					RatioY = 1
+				}
 			},
 			Views = ordered() {
 				Effects = MultiView {
@@ -892,7 +1024,7 @@ Composition {
 						Direction = "Vertical",
 						PipeStyle = "Orthogonal",
 						RootScale = 0.698684,
-						RootOffset = { -1310.16, 247.365 }
+						RootOffset = { -338.809, 15.7611 }
 					}
 				},
 				Keyframes = MultiView {
@@ -975,105 +1107,65 @@ Composition {
 				{ ID = "LayoutStrip", FixedY = 36, Resolve = false, Flat = true },
 				{
 					{
-						{
-							{
-								{ ID = "ActionStrip", FixedY = 50, Flat = true },
-								{
-									{
-										{ ID = "Nodes", RatioY = 1 },
-										{
-											{ ID = "Effects", RatioX = 1 },
-											{ ID = "MediaPool", Fusion = false, RatioX = 1 },
-											MaxViews = 1,
-											RatioY = 1,
-											Columns = 2,
-											PaneID = "OuterBottom"
-										},
-										RatioX = 0.5,
-										Rows = 2,
-										PaneID = "OuterLeft",
-										Zone = "Left"
-									},
-									{
-										{
-											{
-												{ ID = "Nodes", RatioY = 2 },
-												{
-													{ ID = "Effects", RatioY = 1 },
-													{ ID = "MediaPool", RatioY = 1, Fusion = false },
-													PaneID = "InnerBottom",
-													Rows = 2,
-													MaxViews = 1,
-													RatioY = 1
-												},
-												RatioX = 0.5,
-												Rows = 2,
-												PaneID = "InnerLeft",
-												Zone = "!Left"
-											},
-											{
-												{
-													{ ID = "Viewer1", RatioY = 0.01, RatioX = 1 },
-													{ ID = "Viewer2", RatioX = 1 },
-													RatioY = 1,
-													Columns = 2,
-													PaneID = "ViewerSplit"
-												},
-												{ ID = "Time", FixedY = 83, Flat = true },
-												RatioX = 1,
-												Rows = 2
-											},
-											RatioY = 1,
-											Columns = 2,
-											PaneID = "UpperSplit"
-										},
-										{ Fusion = false, ID = "Clips", LARGE_FixedY = 160, MEDIUM_FixedY = 138, SMALL_FixedY = 110 },
-										{
-											{ ID = "Spline", RatioX = 1 },
-											{ ID = "Keyframes", RatioX = 1 },
-											PaneID = "UpperMainSplit",
-											RatioY = 0.3,
-											Columns = 2,
-											Zone = "Left"
-										},
-										RatioX = 1,
-										Rows = 3,
-										PaneID = "InnerRows"
-									},
-									RatioY = 1,
-									Columns = 2,
-									PaneID = "LeftColumns"
-								},
-								RatioX = 1,
-								Rows = 2,
-								PaneID = "ActionRows"
-							},
-							{
-								{ ID = "Inspector", RatioY = 3 },
-								{ ID = "Metadata", RatioY = 1, Fusion = false },
-								Zone = "!Right",
-								Rows = 2,
-								PaneID = "InnerRight",
-								PixelX = 420
-							},
-							RatioY = 1,
-							Columns = 2,
-							PaneID = "ActionColumns"
-						},
-						{
-							{ ID = "Spline", RatioX = 1 },
-							{ ID = "Keyframes", RatioX = 1 },
-							PaneID = "LowerMainSplit",
-							RatioY = 0.3,
-							Columns = 2,
-							Zone = "!Left"
-						},
-						RatioX = 1,
+						{ ID = "MediaPool", Fusion = false, RatioX = 1 },
+						{ ID = "Effects", RatioX = 1 },
+						Zone = "Left",
 						Rows = 2,
-						PaneID = "SplineRows"
+						PaneID = "OuterLeft",
+						PixelX = 420
 					},
 					{
-						{ ID = "Inspector", RatioY = 3 },
+						{
+							{
+								{ ID = "MediaPool", Fusion = false, RatioX = 1 },
+								{ ID = "Effects", RatioX = 1 },
+								PaneID = "InnerLeft",
+								MaxViews = 1,
+								PixelX = 420,
+								Rows = 2,
+								Zone = "!Left"
+							},
+							{
+								{
+									{ ID = "Viewer1", RatioY = 0.01, RatioX = 1 },
+									{ ID = "Viewer2", RatioX = 1 },
+									RatioY = 1,
+									Columns = 2,
+									PaneID = "ViewerSplit"
+								},
+								{ ID = "Time", FixedY = 83, Flat = true },
+								RatioX = 1,
+								Rows = 2
+							},
+							{
+								{ ID = "Inspector", RatioY = 1 },
+								{ ID = "Metadata", RatioY = 1, Fusion = false },
+								PaneID = "InnerRight",
+								MaxViews = 1,
+								PixelX = 420,
+								Rows = 2,
+								Zone = "!Right"
+							},
+							RatioY = 2,
+							Columns = 3,
+							PaneID = "InnerColumns"
+						},
+						{ ID = "ActionStrip", FixedY = 50, Flat = true },
+						{
+							{ ID = "Nodes", RatioX = 1 },
+							{ ID = "Spline", RatioX = 1 },
+							{ ID = "Keyframes", RatioX = 1 },
+							RatioY = 1,
+							Columns = 3,
+							PaneID = "MainSplit"
+						},
+						{ Fusion = false, ID = "Clips", LARGE_FixedY = 160, MEDIUM_FixedY = 138, SMALL_FixedY = 110 },
+						RatioX = 1,
+						Rows = 4,
+						PaneID = "CenterSplit"
+					},
+					{
+						{ ID = "Inspector", RatioY = 1 },
 						{ ID = "Metadata", RatioY = 1, Fusion = false },
 						Zone = "Right",
 						Rows = 2,
@@ -1081,7 +1173,7 @@ Composition {
 						PixelX = 420
 					},
 					RatioY = 1,
-					Columns = 2,
+					Columns = 3,
 					PaneID = "OuterColumns"
 				},
 				RatioX = 1,
@@ -1089,7 +1181,7 @@ Composition {
 				RatioY = 1
 			},
 			TopBar = {
-				Left = { "Left", "MediaPool", "Effects", "Nodes", "Clips", "Console" },
+				Left = { "Left", "MediaPool", "Effects", "Clips", "Nodes", "Console" },
 				Right = { "Spline", "Keyframes", "Metadata", "Inspector", "Right" }
 			}
 		}
@@ -1132,10 +1224,17 @@ Composition {
 							FitMarginY = 0
 						}
 					},
+					SubView = {
+						Enabled = false,
+						GLHistogramViewer = {
+							AutoBounds = true
+						},
+					},
 				},
 				View1 = {
 					PrevCtrlInactiveColor = 4278255360,
 					FullScreen = false,
+					PickH = 1,
 					SideB = {
 						PrevCtrlInactiveColor = 4278255360,
 						PickW = 1,
@@ -1151,7 +1250,6 @@ Composition {
 							FitMarginY = 0
 						}
 					},
-					PickH = 1,
 					PrevCtrlActiveColor = 4278190335,
 					AlwaysOnTop = true,
 					PickW = 1
